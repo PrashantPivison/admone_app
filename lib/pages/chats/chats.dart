@@ -1,243 +1,226 @@
-import 'package:flutter/material.dart';
+// lib/ui/dashboard.dart
 
-class ChatsPage extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:my_app/backend/api_requests/chat_api.dart';
+import 'package:my_app/pages/chats/chat_details.dart';
+import 'package:my_app/pages/chats/chat_model.dart';
+import '../../config/theme.dart';
+
+class Chats extends StatefulWidget {
+  const Chats({super.key});
+
   @override
-  _ChatsPageState createState() => _ChatsPageState();
+  State<Chats> createState() => _ChatState();
 }
 
-class _ChatsPageState extends State<ChatsPage> {
-  List<String> chats = ["Alice", "Bob", "Charlie", "David"];
-  String? selectedChatUser;
-  List<String> messages = [];
-  TextEditingController _controller = TextEditingController();
-
-  void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
-      setState(() {
-        messages.add(_controller.text);
-        _controller.clear();
-      });
-    }
-  }
+class _ChatState extends State<Chats> {
+  late Future<ThreadsResponse> _futureThreads;
+  final TextEditingController _searchController = TextEditingController();
+  int _page = 1;
 
   @override
-  Widget build(BuildContext context) {
-    return selectedChatUser == null
-        ? _buildChatList()
-        : _buildChatScreen(selectedChatUser!);
+  void initState() {
+    super.initState();
+    _loadThreads();
   }
 
-  // Chat List UI
-  Widget _buildChatList() {
-    return Container(
-      padding: EdgeInsets.only(left: 20.0, right: 20.0),
-      decoration: BoxDecoration(
-        color: Colors.white
-      ),
-      child: Column(
+  void _loadThreads() {
+    _futureThreads = ChatApi.getThreads(
+      searchKeyword: _searchController.text.trim().isEmpty
+          ? null
+          : _searchController.text.trim(),
+      page: _page,
+      pageSize: 10,
+    ).then((json) => ThreadsResponse.fromJson(json));
+    setState(() {});
+  }
 
-        children: [
-          AppBar(title: Text("0 unread messages")),
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: SizedBox(
-              width: double.infinity, // Ensures full-width scrolling
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
+  Widget _buildListItem(BuildContext context, {required ThreadSummary t}) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => ChatDetailScreen(
+              threadId: t.id,
+              threadSubject: t.subject,
+              clientName: t.client.name),
+        ));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFDDDDDD)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 14, 10, 14),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.message_outlined,
+                size: 25,
+                color: t.unread ? Colors.green : Colors.grey,
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Search Input
-                    SizedBox(
-                      width: 140,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: "Search...",
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-                        ),
-                      ),
+                    Text(
+                      t.subject,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                            fontFamily: 'Inter',
+                            color: CustomColors.text,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
-                    SizedBox(width: 8),
-
-                    // Dropdown
-                    SizedBox(
-                      width: 110,
-                      child: DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-                        ),
-                        value: "Option 1",
-                        items: ["Option 1", "Option 2", "Option 3"]
-                            .map((option) => DropdownMenuItem(
-                          value: option,
-                          child: Text(option),
-                        ))
-                            .toList(),
-                        onChanged: (value) {},
-                      ),
-                    ),
-                    SizedBox(width: 8),
-
-                    // Button
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text("Search"),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${t.lastMessageSenderCompany}: ${t.lastMessage}',
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            fontFamily: 'Inter',
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                   ],
                 ),
               ),
-            ),
+              const SizedBox(width: 10),
+              Text(
+                t.lastMessageTime,
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(color: Colors.grey),
+              ),
+            ],
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: chats.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedChatUser = chats[index]; // Open chat with selected user
-                    });
-                  },
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Removed CircleAvatar here
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  RichText(
-                                    text: TextSpan(
-                                      style: TextStyle(color: Colors.black, fontSize: 14),
-                                      children: [
-                                        TextSpan(
-                                          text: "${chats[index]} ",
-                                          style: TextStyle(fontWeight: FontWeight.bold),
-                                        ),
-                                        TextSpan(
-                                          text: "Why do we use it? It is a long...",
-                                          style: TextStyle(color: Colors.grey[600]),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 6),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[300],
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text("ADM Team", style: TextStyle(fontSize: 12, color: Colors.black)),
-                                  ),
-                                  SizedBox(height: 6),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          "Last Message by Udit Aggarwal",
-                                          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                                        ),
-                                      ),
-                                      Text(
-                                        "17th January 2025",
-                                        style: TextStyle(fontSize: 12, color: Colors.grey[500]),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Divider(color: Colors.black26, thickness: 1),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  // Chat Screen UI
-  Widget _buildChatScreen(String userName) {
-    return Column(
-      children: [
-        AppBar(
-          title: Text("Chat with $userName"),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              setState(() {
-                selectedChatUser = null;
-              });
-            },
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: messages.length,
-            itemBuilder: (context, index) {
-              return Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[200],
-                    borderRadius: BorderRadius.circular(10),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        toolbarHeight: 130,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Stack(
+          children: [
+            Container(color: Theme.of(context).colorScheme.primary),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Messages',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              fontFamily: 'Poppins',
+                              color: Theme.of(context).colorScheme.onSecondary,
+                            ),
+                      ),
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.error,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: const [
+                            Icon(Icons.add_circle_outline,
+                                size: 14, color: Colors.white),
+                            SizedBox(width: 6),
+                            Text(
+                              'New Message',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 11),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Text(messages[index]),
-                ),
-              );
-            },
-          ),
-        ),
-        _buildMessageInput(),
-      ],
-    );
-  }
-
-  // Message Input Box
-  Widget _buildMessageInput() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-      color: Colors.grey[200],
-      child: Row(
-        children: [
-          IconButton(
-            icon: Icon(Icons.attach_file),
-            onPressed: () {
-              // Attachment button action
-            },
-          ),
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                hintText: "Type a message...",
-                border: InputBorder.none,
+                  const SizedBox(height: 15),
+                  // SEARCH FIELD
+                  TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      hintText: 'Search messages...',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Icon(Icons.search, size: 18),
+                      isDense: true,
+                    ),
+                    style: const TextStyle(fontSize: 12),
+                    textInputAction: TextInputAction.search,
+                    onSubmitted: (_) {
+                      _page = 1;
+                      _loadThreads();
+                    },
+                  ),
+                ],
               ),
             ),
-          ),
-          IconButton(
-            icon: Icon(Icons.send, color: Colors.blue),
-            onPressed: _sendMessage,
-          ),
-        ],
+          ],
+        ),
+      ),
+      body: FutureBuilder<ThreadsResponse>(
+        future: _futureThreads,
+        builder: (ctx, snap) {
+          if (snap.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snap.hasError) {
+            return Center(child: Text('Error: ${snap.error}'));
+          }
+          final resp = snap.data!;
+          if (resp.threads.isEmpty) {
+            return const Center(child: Text('No conversations'));
+          }
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                children: resp.threads
+                    .map((t) => Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 5),
+                          child: _buildListItem(context, t: t),
+                        ))
+                    .toList(),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

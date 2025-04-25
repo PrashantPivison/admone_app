@@ -1,249 +1,346 @@
-import 'package:flutter/material.dart';
+// lib/ui/dashboard/files_screen.dart
 
-class DocumentsPage extends StatelessWidget {
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:my_app/pages/documents/document_model.dart';
+import 'package:my_app/pages/documents/preview_page.dart';
+import '../../config/theme.dart';
+
+/// A simple wrapper so we can treat folders & files in one list.
+class _Item {
+  final FolderItem? folder;
+  final FileItem? file;
+  bool get isFolder => folder != null;
+
+  _Item.folder(this.folder) : file = null;
+  _Item.file(this.file) : folder = null;
+}
+
+class FilesScreen extends StatefulWidget {
+  const FilesScreen({super.key});
+
+  @override
+  State<FilesScreen> createState() => _FilesScreenState();
+}
+
+class _FilesScreenState extends State<FilesScreen> {
+  int? _currentClientId;
+  int? _currentFolderId;
+  String? _currentSearch;
+
+  bool _isLoadingData = true; // initial fetch
+  bool _isLoadingMore = false; // pagination loader
+  int _currentMax = 5; // how many items to show
+  List<_Item> _allItems = [];
+  FilesFoldersResponse? _lastResponse;
+
+  final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+    _load(); // first load
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 100 &&
+        !_isLoadingMore &&
+        _allItems.length > _currentMax) {
+      _loadMore();
+    }
+  }
+
+  void _loadMore() {
+    setState(() => _isLoadingMore = true);
+    // simulate delay so loader is visible
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        _currentMax = min(_currentMax + 5, _allItems.length);
+        _isLoadingMore = false;
+      });
+    });
+  }
+
+  void _load() {
+    setState(() {
+      _isLoadingData = true;
+      _currentMax = 5;
+    });
+
+    DocumentRepository()
+        .fetch(
+      clientId: _currentClientId,
+      folderId: _currentFolderId,
+      search: _currentSearch,
+    )
+        .then((resp) {
+      // flatten folders + files
+      final items = <_Item>[
+        ...resp.folders.map((f) => _Item.folder(f)),
+        ...resp.files.map((f) => _Item.file(f)),
+      ];
+      setState(() {
+        _lastResponse = resp;
+        _allItems = items;
+        _isLoadingData = false;
+        _currentMax = min(5, items.length);
+      });
+    }).catchError((e) {
+      setState(() => _isLoadingData = false);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
+    });
+  }
+
+  Widget _crumb(String text, VoidCallback onTap) => InkWell(
+        onTap: onTap,
+        child: Text(text,
+            style: const TextStyle(
+              decoration: TextDecoration.underline,
+              fontWeight: FontWeight.w500,
+            )),
+      );
+
+  Widget _sep() => const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 6),
+        child: Text('/', style: TextStyle(fontWeight: FontWeight.w600)),
+      );
+
+  Widget _buildBreadcrumbs() {
+    final resp = _lastResponse;
+    if (resp == null) return const SizedBox.shrink();
+
+    final crumbs = <Widget>[];
+
+    // Home
+    crumbs.add(_crumb('Home', () {
+      _currentClientId = null;
+      _currentFolderId = null;
+      _currentSearch = null;
+      _searchController.clear();
+      _load();
+    }));
+
+    // if inside a folder, show client + folder chain
+    if (resp.breadcrumbs.isNotEmpty) {
+      final rootBC = resp.breadcrumbs.first;
+      final client = resp.clientDetails.firstWhere(
+        (c) => c.id == rootBC.clientId,
+        orElse: () => ClientDetail(id: rootBC.clientId, name: ''),
+      );
+
+      crumbs.add(_sep());
+      crumbs.add(_crumb(client.name, () {
+        _currentClientId = client.id;
+        _currentFolderId = null;
+        _currentSearch = null;
+        _searchController.clear();
+        _load();
+      }));
+
+      for (final bc in resp.breadcrumbs) {
+        crumbs.add(_sep());
+        crumbs.add(_crumb(bc.name, () {
+          _currentClientId = client.id;
+          _currentFolderId = bc.id;
+          _currentSearch = null;
+          _searchController.clear();
+          _load();
+        }));
+      }
+    }
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(children: crumbs),
+    );
+  }
+
+  Widget _buildRow(
+      Widget icon, String title, String subtitle, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFFDDDDDD)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(children: [
+          icon,
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium
+                        ?.copyWith(fontWeight: FontWeight.w600)),
+                const SizedBox(height: 4),
+                Text(subtitle,
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelSmall
+                        ?.copyWith(color: Colors.grey)),
+              ],
+            ),
+          )
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildFolderItem(FolderItem f) => _buildRow(
+        const Icon(Icons.folder, size: 24, color: Colors.orange),
+        f.name,
+        f.createdAt,
+        () {
+          _currentFolderId = f.id;
+          _load();
+        },
+      );
+
+  Widget _buildFileItem(FileItem f) {
+    final icon = f.fileName.toLowerCase().endsWith('.pdf')
+        ? Image.asset('images/pdf.png', width: 18, height: 24)
+        : Image.asset('images/jpg.png', width: 18, height: 24);
+    return _buildRow(icon, f.fileName, f.createdAt, () {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => FilePreviewPage(
+            fileId: f.id,
+            fileName: f.fileName,
+          ),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                decoration: BoxDecoration(
-                  color: Colors.red,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        toolbarHeight: 130,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Stack(children: [
+          Container(color: Theme.of(context).colorScheme.primary),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            child: Column(children: [
+              Row(children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Icon(Icons.arrow_back,
+                      color: Colors.white, size: 20),
                 ),
-                height: 80.0,
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Documents',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        height: 1.5,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                child: Container(
-                  padding: EdgeInsets.all(15.0),
-                  margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 0.0),
+                const SizedBox(width: 10),
+                Text('Files',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(color: Colors.white)),
+                const Spacer(),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: Theme.of(context).colorScheme.error,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Recent Chats',
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-
-
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: SizedBox(
-                      width: double.infinity, // Ensures full-width scrolling
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            // Search Input
-                            SizedBox(
-                              width: 140,
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: "Search...",
-                                  border: OutlineInputBorder(),
-                                  contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 8),
-
-                            // Dropdown
-                            SizedBox(
-                              width: 110,
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-                                ),
-                                value: "Option 1",
-                                items: ["Option 1", "Option 2", "Option 3"]
-                                    .map((option) => DropdownMenuItem(
-                                  value: option,
-                                  child: Text(option),
-                                ))
-                                    .toList(),
-                                onChanged: (value) {},
-                              ),
-                            ),
-                            SizedBox(width: 8),
-
-                            // Button
-                            ElevatedButton(
-                              onPressed: () {},
-                              child: Text("Search"),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-
-
-
-
-                  Text(
-                        textAlign: TextAlign.end,
-                        'Trashed Files',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.red,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                      SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Table(
-                            columnWidths: {
-                              0: FixedColumnWidth(120),
-                              1: FixedColumnWidth(200),
-                              2: FixedColumnWidth(150),
-                              3: FixedColumnWidth(180),
-                              4: FixedColumnWidth(180),
-                              5: FixedColumnWidth(100),
-                              6: FixedColumnWidth(100),
-                            },
-                            border: TableBorder.all(color: Colors.grey),
-                            // Optional for debugging
-                            children: [
-                              TableRow(
-                                children: [
-                                  _tableCell('Name', isHeader: true),
-                                  _tableCell('Type', isHeader: true),
-                                  _tableCell('Created By', isHeader: true),
-                                  _tableCell('Company Name', isHeader: true),
-                                  _tableCell('Created On', isHeader: true),
-                                  _tableCell('Status', isHeader: true),
-                                  _tableCell('Trashed', isHeader: true),
-                                  // Keep header as text
-                                ],
-                              ),
-                              TableRow(
-                                children: [
-                                  _tableCellWithIcon('2002', Icons.folder),
-                                  // Folder icon
-                                  _tableCell('Folder'),
-                                  _tableCell('Udit Aggarwal'),
-                                  _tableCell('ADMOne Test Portal'),
-                                  _tableCell('10-01-2025 06:03:03'),
-                                  _tableCell('Approved'),
-                                  _iconTableCell(Icons.delete, Colors.red),
-                                  // Trash icon
-                                ],
-                              ),
-                              TableRow(
-                                children: [
-                                  _tableCellWithIcon('2002', Icons.folder),
-                                  // Folder icon
-                                  _tableCell('Folder'),
-                                  _tableCell('Udit Aggarwal'),
-                                  _tableCell('ADMOne Test Portal'),
-                                  _tableCell('10-01-2025 06:03:03'),
-                                  _tableCell('Approved'),
-                                  _iconTableCell(Icons.delete, Colors.red),
-                                  // Trash icon
-                                ],
-                              ),
-                              TableRow(
-                                children: [
-                                  _tableCellWithIcon('2002', Icons.folder),
-                                  // Folder icon
-                                  _tableCell('Folder'),
-                                  _tableCell('Udit Aggarwal'),
-                                  _tableCell('ADMOne Test Portal'),
-                                  _tableCell('10-01-2025 06:03:03'),
-                                  _tableCell('Approved'),
-                                  _iconTableCell(Icons.delete, Colors.red),
-                                  // Trash icon
-                                ],
-                              ),
-                            ],
-                          )
-                      ),
-                    ],
-                  ),
+                  child: Row(children: const [
+                    Icon(Icons.add_circle_outline,
+                        size: 14, color: Colors.white),
+                    SizedBox(width: 6),
+                    Text('New File',
+                        style: TextStyle(color: Colors.white, fontSize: 11)),
+                  ]),
                 ),
+              ]),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  hintText: 'Search files or folders...',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
+                  prefixIcon: const Icon(Icons.search, size: 18),
+                  isDense: true,
+                ),
+                textInputAction: TextInputAction.search,
+                // Trigger search on every keystroke:
+                onChanged: (q) {
+                  _currentSearch = q.trim().isEmpty ? null : q.trim();
+                  _load();
+                },
+                // Also keep the Enter behavior:
+                onSubmitted: (q) {
+                  _currentSearch = q.trim().isEmpty ? null : q.trim();
+                  _load();
+                },
               ),
-            ],
+            ]),
           ),
-        ),
+        ]),
       ),
-    );
-  }
-
-  // Helper function to create table cells
-
-  Widget _tableCell(String text, {bool isHeader = false}) {
-    return TableCell(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-      ),
-    );
-  }
-
-// Table cell with text and an icon
-  Widget _tableCellWithIcon(String text, IconData icon) {
-    return TableCell(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Icon(icon, size: 20, color: Colors.blue),
-            // Adjust size/color as needed
-            SizedBox(width: 8),
-            Text(text),
-          ],
-        ),
-      ),
-    );
-  }
-
-// Table cell with only an icon (Trash icon)
-  Widget _iconTableCell(IconData icon, Color color) {
-    return TableCell(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Icon(icon, size: 20, color: color), // Trash icon
+      body: SafeArea(
+        child: _isLoadingData
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildBreadcrumbs(),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: _allItems.length > _currentMax
+                          ? _currentMax + 1
+                          : _allItems.length,
+                      itemBuilder: (ctx, i) {
+                        if (i == _currentMax && _isLoadingMore) {
+                          return const Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        final item = _allItems[i];
+                        return item.isFolder
+                            ? _buildFolderItem(item.folder!)
+                            : _buildFileItem(item.file!);
+                      },
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }

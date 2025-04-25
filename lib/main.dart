@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/home_page.dart';
+import 'package:my_app/pages/todo/todo_list.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'app_state.dart';
+import 'pages/auth_screens/login_page.dart';
+import 'pages/auth_screens/set_passcode.dart';
+import 'pages/auth_screens/login_otp_1.dart';
+import 'pages/auth_screens/login_biometric.dart';
+import 'pages/auth_screens/login_otp_1.dart';
 import 'pages/documents/documents.dart';
 import 'pages/company_data/companydata.dart';
-import 'pages/company_data/companydata_details.dart';
 import 'pages/chats/chats.dart';
+import 'pages/home_screens/home_page.dart';
 
-import 'pages/auth_screens/login_page.dart'; // If needed
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('auth_token');
 
-void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => AppState()..initializeAuth(token),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -18,15 +34,41 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: CompanydataDetails(),
-      home: BottomNavScreen(),
+      home: Consumer<AppState>(
+        builder: (context, appState, _) {
+          // 1) Not logged in → email/password
+          if (!appState.isLoggedIn) {
+            return LoginPage();
+          }
+
+          // 2) After login or token present → first, show biometric opt‑in
+          if (!appState.biometricPassed && !appState.passcodeChecked) {
+            return LoginBiometric();
+          }
+
+          // 3) If user opted‑in & passed biometric, or they skipped & passed passcode, go dashboard
+          if (appState.biometricPassed || appState.passcodePassed) {
+            return const BottomNavScreen();
+          }
+
+          // 4) If they skipped bio, now show passcode
+          if (!appState.passcodeChecked) {
+            return LoginPasscode();
+          }
+
+          // 5) As a last fallback, re‑try biometric
+          return LoginBiometric();
+        },
+      ),
     );
   }
 }
 
 class BottomNavScreen extends StatefulWidget {
+  const BottomNavScreen({super.key});
+
   @override
-  _BottomNavScreenState createState() => _BottomNavScreenState();
+  State<BottomNavScreen> createState() => _BottomNavScreenState();
 }
 
 class _BottomNavScreenState extends State<BottomNavScreen> {
@@ -34,8 +76,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 
   final List<Widget> _pages = [
     HomePage(),
-    DocumentsPage(),
-    ChatsPage(),
+    FilesScreen(),
+    Chats(),
+    TodoList(),
     CompanyDataPage(),
   ];
 
@@ -47,6 +90,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final appState = Provider.of<AppState>(context, listen: false);
+    final appState = Provider.of<AppState>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey[200],
@@ -54,47 +99,52 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           'images/adm_logo.png',
           width: 150.0,
           height: 80.0,
+          errorBuilder: (context, error, stackTrace) => const SizedBox(
+            width: 150,
+            height: 80,
+            child: Center(child: Text('ADM Logo')),
+          ),
         ),
         actions: [
-          // Notification Icon
           IconButton(
             icon: const Icon(Icons.notifications),
-            color: Colors.blueAccent, // Fix color issue
+            color: Colors.blueAccent,
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('No new notifications')),
               );
             },
           ),
-
-          // User Name with Padding
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
-              'User Name',
-              style: TextStyle(color: Colors.black), // Adjust color as needed
+              '${appState.userData?['user']?['name'] ?? ''} '
+              '${appState.userData?['user']?['surname'] ?? ''}',
+              style: const TextStyle(color: Colors.black),
             ),
           ),
-
-          // User Profile Dropdown
           PopupMenuButton<String>(
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 'logout') {
-                Navigator.pushReplacementNamed(
-                    context, '/login'); // Navigate properly
+                // 1) clear your auth state
+                await appState.logout();
+                // 2) and then blow away everything in the Navigator
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => LoginPage()),
+                  (route) => false,
+                );
               }
             },
             icon: const CircleAvatar(
               backgroundImage: AssetImage('images/user_profile.png'),
             ),
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem(value: 'profile', child: Text('Profile')),
-              const PopupMenuItem(value: 'settings', child: Text('Settings')),
-              const PopupMenuItem(value: 'logout', child: Text('Logout')),
+            itemBuilder: (BuildContext context) => const [
+              PopupMenuItem(value: 'profile', child: Text('Profile')),
+              PopupMenuItem(value: 'settings', child: Text('Settings')),
+              PopupMenuItem(value: 'logout', child: Text('Logout')),
             ],
           ),
-
-          const SizedBox(width: 10), // Add some spacing
+          const SizedBox(width: 10),
         ],
       ),
       body: _pages[_currentIndex],
@@ -102,23 +152,27 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         backgroundColor: Colors.grey[200],
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
-        type: BottomNavigationBarType.fixed, // Ensures all icons are visible
-        items: [
+        type: BottomNavigationBarType.fixed,
+        items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: "Dashboard",
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.folder),
-            label: "Documents",
+            icon: Icon(Icons.folder_copy_outlined),
+            label: 'Files',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: "Chats",
+            icon: Icon(Icons.message_outlined),
+            label: 'Message',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: "Company Data",
+            icon: Icon(Icons.playlist_add_sharp),
+            label: 'To-do',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.playlist_add_sharp),
+            label: 'Billing',
           ),
         ],
       ),

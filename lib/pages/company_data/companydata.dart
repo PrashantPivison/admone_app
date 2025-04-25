@@ -1,117 +1,155 @@
+// lib/pages/company_data/companydata.dart
+
 import 'package:flutter/material.dart';
+import 'package:my_app/backend/api_requests/companydata_api.dart';
+
+import 'package:my_app/pages/company_data/companydata_model.dart';
 import 'companydata_details.dart';
 
-class CompanyDataPage extends StatelessWidget {
+class CompanyDataPage extends StatefulWidget {
+  const CompanyDataPage({Key? key}) : super(key: key);
+
+  @override
+  State<CompanyDataPage> createState() => _CompanyDataPageState();
+}
+
+class _CompanyDataPageState extends State<CompanyDataPage> {
+  late Future<EntitiesResponse> _futureEntities;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureEntities = CompanyDataApi.fetchClients();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: SafeArea(
-        child: Column(
-          children: [
-            /// ✅ Header Section (Fixed Height)
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-              decoration: BoxDecoration(
-                color: Colors.red,
-              ),
-              height: 100.0,
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Company Data',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontSize: 35,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+        child: FutureBuilder<EntitiesResponse>(
+          future: _futureEntities,
+          builder: (ctx, snap) {
+            if (snap.connectionState != ConnectionState.done) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snap.hasError) {
+              return Center(
+                  child: Text('Error loading companies: ${snap.error}'));
+            }
+            final data = snap.data!;
+            final count = data.clients.length;
+            return Column(
+              children: [
+                // ————————— Header —————————
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  height: 100,
+                  width: double.infinity,
+                  color: Colors.red,
+                  child: const Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      'Company Data',
+                      style: TextStyle(
+                        fontSize: 35,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20.0),
+                ),
+                const SizedBox(height: 20),
 
-            /// ✅ Use Expanded to Avoid Overflow
-            Expanded(
-              child: SingleChildScrollView(
-                // ✅ Make content scrollable
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'You have 1 Corporation registered with us ',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w200,
-                            color: Colors.black),
-                      ),
-                      SizedBox(height: 20.0),
-
-                      /// ✅ Company Info Box
-                      Container(
-                        padding: EdgeInsets.all(30.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        ),
-                        width: double.infinity,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'ADMOne test corp',
-                              style: TextStyle(
-                                  fontSize: 20.0, color: Colors.blue[500]),
-                            ),
-                            SizedBox(height: 10.0),
-                            Text(
-                              'Partnership',
-                              style: TextStyle(
-                                  fontSize: 15.0, color: Colors.grey[600]),
-                            ),
-                            SizedBox(height: 10.0),
-                            Text(
-                              '3548 Lone Star Cir, Fort Worth, 76177',
-                              style: TextStyle(
-                                  fontSize: 15.0,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700),
-                            ),
-                            SizedBox(height: 10.0),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            CompanydataDetails()),
-                                  );
-                                },
-                                child: Text(
-                                  'See Details',
-                                  style: TextStyle(
-                                    color: Colors.blueAccent,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                // ——————— Summary line ———————
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    'You have $count corporation${count == 1 ? '' : 's'} registered with us',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w200,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ],
+                const SizedBox(height: 20),
+
+                // —————— Scrollable list ——————
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: data.clients.map((c) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: Container(
+                              padding: const EdgeInsets.all(30),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    c.name,
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.blue[500]),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  if (c.businessStructure != null)
+                                    Text(
+                                      c.businessStructure!,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.grey[600]),
+                                    ),
+                                  const SizedBox(height: 10),
+                                  if (c.fullAddress != null)
+                                    Text(
+                                      c.fullAddress!,
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  const SizedBox(height: 10),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => CompanydataDetails(
+                                                clientId: c.id,
+                                                clientName: c.name),
+                                          ),
+                                        );
+                                      },
+                                      child: const Text(
+                                        'See Details',
+                                        style: TextStyle(
+                                          color: Colors.blueAccent,
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

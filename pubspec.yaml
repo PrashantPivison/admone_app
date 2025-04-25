@@ -10,26 +10,39 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  http: ^0.13.5
+  provider: ^6.0.5
+  shared_preferences: ^2.2.2
   cupertino_icons: ^1.0.8
-
+  url_launcher: ^6.1.7
+  file_picker: ^5.4.6
+  local_auth: 2.1.6
+  path_provider: ^2.0.15   
+  flutter_pdfview: ^1.2.3 
+  flutter_plugin_android_lifecycle: ^2.0.9
+ 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^5.0.0
-
-  flutter_launcher_icons: ^0.13.1 # Add this package
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
 
   assets:
-    - images/adm_logo.png
+    - images/admlogo.png
+    - assets/images/appbar_bg.png
+    # - images/user_profile.png
+    - images/pdf.png
+    - images/jpg.png
+    - assets/images/fingerprint.png
+    - assets/images/logo.png
+
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "images/ic_launcher.png"  # Change to your icon file
-  adaptive_icon_foreground: "images/ic_launcher.png"  # Optional for Android adaptive icons
-  adaptive_icon_background: "#ffffff"  # Background color for adaptive icons
+  image_path: "images/ic_launcher.png"
+  adaptive_icon_foreground: "images/ic_launcher.png"
+  adaptive_icon_background: "#ffffff"
