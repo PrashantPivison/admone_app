@@ -3,6 +3,7 @@ import 'package:my_app/pages/company_data/companydata.dart';
 import 'package:provider/provider.dart';
 import 'package:my_app/app_state.dart';
 import 'package:my_app/backend/api_requests/dashboard_api.dart';
+import 'package:my_app/pages/auth_screens/login_page.dart'; // ⬅️ Add this import
 import '../../config/theme.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,7 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _DashboardState extends State<HomePage> {
-  int _currentIndex = 0;
   Map<String, dynamic>? _user;
   List<dynamic> _documents = [];
   List<dynamic> _messages = [];
@@ -33,7 +33,6 @@ class _DashboardState extends State<HomePage> {
     try {
       final appState = Provider.of<AppState>(context, listen: false);
       final response = await DashboardApi.getDashboardStats(appState.token!);
-
       setState(() {
         _documents = response['recentFiles'] ?? [];
         _messages = response['threads'] ?? [];
@@ -61,7 +60,7 @@ class _DashboardState extends State<HomePage> {
         child: InkWell(
           borderRadius: BorderRadius.circular(15),
           onTap: () {
-            // Action logic here
+            // Implement actions as needed
           },
           child: Container(
             decoration: BoxDecoration(
@@ -125,27 +124,13 @@ class _DashboardState extends State<HomePage> {
         amount: '12,122',
       ),
       const SizedBox(height: 10),
-      _buildListItem(
-        context,
-        gicon: Icons.receipt_long_outlined,
-        icon: null,
-        title: 'Invoice #7897AA112399...',
-        subtitle: 'Unpaid',
-        amount: '12,122',
-      ),
     ];
   }
 
   List<Widget> _buildDocumentItems(BuildContext context) {
-    if (_loading) {
-      return [const Center(child: CircularProgressIndicator())];
-    }
-    if (_error != null) {
-      return [Text('Error loading documents: $_error')];
-    }
-    if (_documents.isEmpty) {
-      return [Text('No documents found')];
-    }
+    if (_loading) return [const Center(child: CircularProgressIndicator())];
+    if (_error != null) return [Text('Error loading documents: $_error')];
+    if (_documents.isEmpty) return [const Text('No documents found')];
 
     return _documents.map((doc) {
       final isPDF = doc['file_type']?.toLowerCase() == 'pdf';
@@ -167,15 +152,9 @@ class _DashboardState extends State<HomePage> {
   }
 
   List<Widget> _buildMessaggesItems(BuildContext context) {
-    if (_loading) {
-      return [const Center(child: CircularProgressIndicator())];
-    }
-    if (_error != null) {
-      return [Text('Error loading messages: $_error')];
-    }
-    if (_messages.isEmpty) {
-      return [Text('No messages found')];
-    }
+    if (_loading) return [const Center(child: CircularProgressIndicator())];
+    if (_error != null) return [Text('Error loading messages: $_error')];
+    if (_messages.isEmpty) return [const Text('No messages found')];
 
     return _messages.map((msg) {
       return Padding(
@@ -206,11 +185,7 @@ class _DashboardState extends State<HomePage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          style: BorderStyle.solid,
-          width: 1.0,
-          color: const Color(0xFFDDDDDD),
-        ),
+        border: Border.all(color: const Color(0xFFDDDDDD), width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -225,7 +200,7 @@ class _DashboardState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
+                  SizedBox(
                     width: 200,
                     child: Text(
                       title,
@@ -271,9 +246,7 @@ class _DashboardState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                children: _buildActionButtons(context),
-              ),
+              child: Row(children: _buildActionButtons(context)),
             ),
           ),
           const SizedBox(height: 20),
@@ -333,8 +306,28 @@ class _DashboardState extends State<HomePage> {
                       Expanded(
                         child: Align(
                           alignment: Alignment.centerRight,
-                          child: Icon(Icons.settings_outlined,
-                              size: 20, color: Colors.white),
+                          child: PopupMenuButton<String>(
+                            onSelected: (value) async {
+                              if (value == 'logout') {
+                                final appState = Provider.of<AppState>(context,
+                                    listen: false);
+                                await appState.logout();
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (_) => const LoginPage()),
+                                  (route) => false,
+                                );
+                              }
+                            },
+                            icon: const Icon(Icons.settings_outlined,
+                                size: 20, color: Colors.white),
+                            itemBuilder: (BuildContext context) => [
+                              const PopupMenuItem<String>(
+                                value: 'logout',
+                                child: Text('Logout'),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

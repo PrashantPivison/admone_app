@@ -67,10 +67,13 @@ class LoginPasscode extends StatelessWidget {
                   child: const Text('Unlock'),
                 ),
               ),
-              TextButton(
-                onPressed: () => _handleSkip(context),
-                child: const Text('Skip and use biometric'),
-              ),
+              if (!Provider.of<AppState>(context, listen: false)
+                  .passcodeSet) ...[
+                TextButton(
+                  onPressed: () => _handleSkip(context),
+                  child: const Text('Skip and use biometric'),
+                ),
+              ]
             ],
           ),
         ),

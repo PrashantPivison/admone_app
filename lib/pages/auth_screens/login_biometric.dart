@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
-// import '../../app_state.dart';
-import 'package:my_app/app_state.dart';
-import '../../config/theme.dart';
+import '../../app_state.dart';
 import '../../config/Animation/righttoleft_animation.dart';
 import '../../main.dart';
-// import 'login_passcode.dart';
-import './login_otp_1.dart';
+import '../../config/theme.dart';
+import './set_passcode.dart'; // ✅ for setting passcode
 
 class LoginBiometric extends StatelessWidget {
   LoginBiometric({Key? key}) : super(key: key);
 
   final LocalAuthentication _auth = LocalAuthentication();
 
-  Future<void> _turnOnBiometric(BuildContext context) async {
+  Future<void> _handleBiometricOrAuthenticate(BuildContext context) async {
     final appState = Provider.of<AppState>(context, listen: false);
 
     bool canCheck = false;
@@ -25,11 +23,11 @@ class LoginBiometric extends StatelessWidget {
     }
 
     if (!canCheck) {
-      // Fallback to passcode
-      appState.setPasscodeChecked(true);
+      // Device has no biometric → fallback immediately to passcode setup
+      await appState.markBiometricSetupDone();
       Navigator.pushReplacement(
         context,
-        createRightToLeftRoute(LoginPasscode()),
+        createRightToLeftRoute(const SetPasscodeScreen()),
       );
       return;
     }
@@ -37,7 +35,7 @@ class LoginBiometric extends StatelessWidget {
     bool didAuth = false;
     try {
       didAuth = await _auth.authenticate(
-        localizedReason: 'Authenticate to enable biometrics',
+        localizedReason: 'Authenticate using biometrics',
         options: const AuthenticationOptions(
           biometricOnly: true,
           stickyAuth: false,
@@ -47,29 +45,31 @@ class LoginBiometric extends StatelessWidget {
     } catch (_) {
       didAuth = false;
     }
-
     if (didAuth) {
-      appState.setBiometricPassed(true);
+      appState.setBiometricPassed(true); // ✅
+      appState.passcodeSet = false; // ✅ no passcode now
+      appState.setPasscodePassed(false); // ✅
+      await appState.markBiometricSetupDone();
       Navigator.of(context).pushAndRemoveUntil(
         createRightToLeftRoute(const BottomNavScreen()),
         (_) => false,
       );
     } else {
-      // Cancelled or failed → passcode
-      appState.setPasscodeChecked(true);
+      // User cancelled biometric → allow setting passcode
+      await appState.markBiometricSetupDone();
       Navigator.pushReplacement(
         context,
-        createRightToLeftRoute(LoginPasscode()),
+        createRightToLeftRoute(const SetPasscodeScreen()),
       );
     }
   }
 
-  void _maybeLater(BuildContext context) {
+  void _moveToSetPasscode(BuildContext context) async {
     final appState = Provider.of<AppState>(context, listen: false);
-    appState.setPasscodeChecked(true);
+    await appState.markBiometricSetupDone();
     Navigator.pushReplacement(
       context,
-      createRightToLeftRoute(LoginPasscode()),
+      createRightToLeftRoute(const SetPasscodeScreen()),
     );
   }
 
@@ -158,7 +158,7 @@ class LoginBiometric extends StatelessWidget {
       height: 45,
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () => _turnOnBiometric(context),
+        onPressed: () => _handleBiometricOrAuthenticate(context),
         style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(context).colorScheme.primary,
           shape: RoundedRectangleBorder(
@@ -183,9 +183,9 @@ class LoginBiometric extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: TextButton(
-        onPressed: () => _maybeLater(context),
+        onPressed: () => _moveToSetPasscode(context),
         child: Text(
-          'May be later',
+          'Maybe later',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w600,

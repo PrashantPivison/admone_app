@@ -37,13 +37,32 @@ class AuthApi {
     final url = Uri.parse('$_baseUrl/loginOtp');
     final body = jsonEncode({'email': email});
 
+    print('➡️ Sending OTP request to: $url');
+    print('➡️ Request body: $body');
+
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: body,
     );
 
-    return _processResponse(response);
+    print('⬅️ Received Response: ${response.body}');
+
+    if (response.statusCode == 200) {
+      // If success, assume proper JSON
+      return _processResponse(response);
+    } else {
+      // if error (like "User not found"), check if response is a plain string
+      try {
+        final parsed = _processResponse(response); // try parsing JSON
+        return parsed;
+      } catch (e) {
+        // if parsing fails, fallback to a manual error
+        return {
+          'error': response.body.replaceAll('"', '') // remove quotes if any
+        };
+      }
+    }
   }
 
   static Future<Map<String, dynamic>> verifyOtp({
@@ -71,7 +90,21 @@ class AuthApi {
     // --- DEBUG: log response ---
     print('🔑 verifyOtp ← [${response.statusCode}] ${response.body}');
 
-    return _processResponse(response);
+    if (response.statusCode == 200) {
+      return _processResponse(response);
+    } else {
+      // Error Handling
+      try {
+        final parsed = _processResponse(response); // try parse JSON if possible
+        return parsed;
+      } catch (e) {
+        return {
+          'error': response.body
+              .replaceAll('"', '')
+              .trim(), // fallback to plain text
+        };
+      }
+    }
   }
 
   /// NEW: Forgot password endpoint - returns a redirect URL

@@ -84,6 +84,7 @@ class _CompanydataDetailsState extends State<CompanydataDetails> {
                     ),
                   ),
                   // — Core Info Card
+                  
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: Container(

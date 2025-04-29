@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../app_state.dart';
 import '../../config/Animation/righttoleft_animation.dart';
-import '../../main.dart'; // for BottomNavScreen
+import '../../main.dart';
 
 class SetPasscodeScreen extends StatefulWidget {
   const SetPasscodeScreen({Key? key}) : super(key: key);
+
   @override
   State<SetPasscodeScreen> createState() => _SetPasscodeScreenState();
 }
@@ -27,7 +28,9 @@ class _SetPasscodeScreenState extends State<SetPasscodeScreen> {
     final appState = Provider.of<AppState>(context, listen: false);
     await appState.setNewPasscode(p1);
 
-    // Navigate to dashboard and clear nav history
+    // Mark biometric setup done if passcode is set
+    await appState.markBiometricSetupDone();
+
     Navigator.of(context).pushAndRemoveUntil(
       createRightToLeftRoute(const BottomNavScreen()),
       (_) => false,
@@ -64,7 +67,9 @@ class _SetPasscodeScreenState extends State<SetPasscodeScreen> {
             ],
             const SizedBox(height: 20),
             ElevatedButton(
-                onPressed: _onSave, child: const Text('Save Passcode')),
+              onPressed: _onSave,
+              child: const Text('Save Passcode'),
+            ),
           ],
         ),
       ),

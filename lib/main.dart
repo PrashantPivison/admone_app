@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/config/theme.dart';
+import 'package:my_app/pages/auth_screens/biometric_auth_screen.dart';
 import 'package:my_app/pages/todo/todo_list.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,30 +36,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: customTheme,
       home: Consumer<AppState>(
         builder: (context, appState, _) {
-          // 1) Not logged in → email/password
           if (!appState.isLoggedIn) {
-            return LoginPage();
+            return const LoginPage();
           }
 
-          // 2) After login or token present → first, show biometric opt‑in
-          if (!appState.biometricPassed && !appState.passcodeChecked) {
+          if (!appState.biometricSetupDone) {
             return LoginBiometric();
           }
 
-          // 3) If user opted‑in & passed biometric, or they skipped & passed passcode, go dashboard
-          if (appState.biometricPassed || appState.passcodePassed) {
-            return const BottomNavScreen();
-          }
-
-          // 4) If they skipped bio, now show passcode
-          if (!appState.passcodeChecked) {
+          // If user has set passcode, authenticate by passcode
+          if (appState.passcodeSet && !appState.passcodePassed) {
             return LoginPasscode();
           }
 
-          // 5) As a last fallback, re‑try biometric
-          return LoginBiometric();
+          // If user has enabled biometric, authenticate by biometric
+          if (!appState.passcodeSet && !appState.biometricPassed) {
+            return BiometricAuthScreen();
+          }
+
+          return const BottomNavScreen(); // after authentication success
         },
       ),
     );
@@ -93,60 +93,60 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     // final appState = Provider.of<AppState>(context, listen: false);
     final appState = Provider.of<AppState>(context);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey[200],
-        title: Image.asset(
-          'images/adm_logo.png',
-          width: 150.0,
-          height: 80.0,
-          errorBuilder: (context, error, stackTrace) => const SizedBox(
-            width: 150,
-            height: 80,
-            child: Center(child: Text('ADM Logo')),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            color: Colors.blueAccent,
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('No new notifications')),
-              );
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              '${appState.userData?['user']?['name'] ?? ''} '
-              '${appState.userData?['user']?['surname'] ?? ''}',
-              style: const TextStyle(color: Colors.black),
-            ),
-          ),
-          PopupMenuButton<String>(
-            onSelected: (value) async {
-              if (value == 'logout') {
-                // 1) clear your auth state
-                await appState.logout();
-                // 2) and then blow away everything in the Navigator
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => LoginPage()),
-                  (route) => false,
-                );
-              }
-            },
-            icon: const CircleAvatar(
-              backgroundImage: AssetImage('images/user_profile.png'),
-            ),
-            itemBuilder: (BuildContext context) => const [
-              PopupMenuItem(value: 'profile', child: Text('Profile')),
-              PopupMenuItem(value: 'settings', child: Text('Settings')),
-              PopupMenuItem(value: 'logout', child: Text('Logout')),
-            ],
-          ),
-          const SizedBox(width: 10),
-        ],
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.grey[200],
+      //   title: Image.asset(
+      //     'images/adm_logo.png',
+      //     width: 150.0,
+      //     height: 80.0,
+      //     errorBuilder: (context, error, stackTrace) => const SizedBox(
+      //       width: 150,
+      //       height: 80,
+      //       child: Center(child: Text('ADM Logo')),
+      //     ),
+      //   ),
+      //   actions: [
+      //     IconButton(
+      //       icon: const Icon(Icons.notifications),
+      //       color: Colors.blueAccent,
+      //       onPressed: () {
+      //         ScaffoldMessenger.of(context).showSnackBar(
+      //           const SnackBar(content: Text('No new notifications')),
+      //         );
+      //       },
+      //     ),
+      //     Padding(
+      //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      //       child: Text(
+      //         '${appState.userData?['user']?['name'] ?? ''} '
+      //         '${appState.userData?['user']?['surname'] ?? ''}',
+      //         style: const TextStyle(color: Colors.black),
+      //       ),
+      //     ),
+      //     PopupMenuButton<String>(
+      //       onSelected: (value) async {
+      //         if (value == 'logout') {
+      //           // 1) clear your auth state
+      //           await appState.logout();
+      //           // 2) and then blow away everything in the Navigator
+      //           Navigator.of(context).pushAndRemoveUntil(
+      //             MaterialPageRoute(builder: (_) => LoginPage()),
+      //             (route) => false,
+      //           );
+      //         }
+      //       },
+      //       icon: const CircleAvatar(
+      //         backgroundImage: AssetImage('images/user_profile.png'),
+      //       ),
+      //       itemBuilder: (BuildContext context) => const [
+      //         PopupMenuItem(value: 'profile', child: Text('Profile')),
+      //         PopupMenuItem(value: 'settings', child: Text('Settings')),
+      //         PopupMenuItem(value: 'logout', child: Text('Logout')),
+      //       ],
+      //     ),
+      //     const SizedBox(width: 10),
+      //   ],
+      // ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.grey[200],
