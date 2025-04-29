@@ -310,6 +310,7 @@ class _LoginWithOtpState extends State<LoginWithOtp> {
         height: 45,
         child: ElevatedButton(
           onPressed: (_isEmailValid && !_isSendingOtp) ? _sendOtp : null,
+
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,
             shape:
@@ -323,7 +324,15 @@ class _LoginWithOtpState extends State<LoginWithOtp> {
                   child: CircularProgressIndicator(
                       color: Colors.white, strokeWidth: 2),
                 )
-              : const Text('Get OTP'),
+              : const Text('Get OTP',
+            style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 14,
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+
+          ),
         ),
       );
 

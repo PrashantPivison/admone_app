@@ -123,7 +123,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           child: CircularProgressIndicator(
                               color: Colors.white, strokeWidth: 2),
                         )
-                      : const Text('Send Reset Link'),
+                      : const Text('Send Reset Link' ,
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+
+                  ),
                 ),
               ),
 
