@@ -113,16 +113,18 @@ class _LoginPageState extends State<LoginPage> {
               _buildEmailField(),
               if (_emailError != null)
                 Padding(
-                  padding: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.only(top: 8),
                   child: Text(_emailError!,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(color: Colors.red ,  fontSize: 14)),
                 ),
               const SizedBox(height: 10),
               _buildPasswordField(),
               if (_passwordError != null)
                 Padding(
-                  padding: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.only(top: 8),
                   child: Text(_passwordError!,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(color: Colors.red ,  fontSize: 14)),
 
                 ),

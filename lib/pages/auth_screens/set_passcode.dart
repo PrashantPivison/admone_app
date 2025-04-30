@@ -159,11 +159,15 @@ class _SetPasscodeScreenState extends State<SetPasscodeScreen> {
               _buildPasscodeField('Confirm passcode', _confirmCtrl),
               if (_error != null) ...[
                 const SizedBox(height: 12),
-                Text(
-                  _error!,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.red,
-                    fontFamily: 'Inter',
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    _error!,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.red,
+                      fontFamily: 'Inter',
+                        fontSize: 14
+                    ),
                   ),
                 ),
               ],

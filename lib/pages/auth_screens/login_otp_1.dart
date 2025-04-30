@@ -188,6 +188,7 @@ class _LoginPasscodeState extends State<LoginPasscode> {
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.red,
                     fontFamily: 'Inter',
+                    fontSize: 14,
                   ),
                 ),
               ],

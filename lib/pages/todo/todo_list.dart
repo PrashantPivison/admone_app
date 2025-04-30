@@ -212,7 +212,7 @@ class _TodoListState extends State<TodoList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         toolbarHeight: 130,
@@ -221,7 +221,7 @@ class _TodoListState extends State<TodoList> {
         flexibleSpace: Stack(children: [
           Container(color: Theme.of(context).colorScheme.primary),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -238,15 +238,15 @@ class _TodoListState extends State<TodoList> {
                           .textTheme
                           .headlineMedium
                           ?.copyWith(
-                            fontFamily: 'Poppins',
-                            color: Theme.of(context).colorScheme.onSecondary,
-                          )),
+                        fontFamily: 'Poppins',
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      )),
                 ]),
                 const SizedBox(height: 15),
                 TextField(
                   decoration: InputDecoration(
                     contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     hintText: 'Search tasks...',
                     filled: true,
                     fillColor: Colors.white,
@@ -277,6 +277,6 @@ class _TodoListState extends State<TodoList> {
           return _buildDashboardContent(snap.data!);
         },
       ),
-    );
+    ), ) ;
   }
 }

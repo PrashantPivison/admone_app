@@ -94,34 +94,82 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     final appState = Provider.of<AppState>(context);
     return Scaffold(
       body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.grey[200],
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            color: Colors.white, // Background color moved here
+            child: BottomNavigationBar(
+              backgroundColor: Colors.transparent, // Important!
+              elevation: 0, // Removes default shadow
+              currentIndex: _currentIndex,
+              onTap: _onTabTapped,
+              type: BottomNavigationBarType.fixed,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home_outlined),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.folder_copy_outlined),
+                  label: 'Files',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.message_outlined),
+                  label: 'Message',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.playlist_add_sharp),
+                  label: 'To-do',
+                ),
+                // BottomNavigationBarItem(
+                //   icon: Icon(Icons.playlist_add_sharp),
+                //   label: 'Billing',
+                // ),
+              ],
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.folder_copy_outlined),
-            label: 'Files',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message_outlined),
-            label: 'Message',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.playlist_add_sharp),
-            label: 'To-do',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.playlist_add_sharp),
-            label: 'Billing',
-          ),
-        ],
+        ),
       ),
+      // bottomNavigationBar: Padding(
+      //   padding: const EdgeInsets.fromLTRB(15,0,15,20),
+      //   child: Container(
+      //     decoration: BoxDecoration(
+      //       borderRadius: BorderRadius.vertical(
+      //         top: Radius.circular(8), // Rounded top corners
+      //       ),
+      //     ),
+      //     child: BottomNavigationBar(
+      //       backgroundColor: Colors.white,
+      //       currentIndex: _currentIndex,
+      //       onTap: _onTabTapped,
+      //       type: BottomNavigationBarType.fixed,
+      //       items: const [
+      //         BottomNavigationBarItem(
+      //           icon: Icon(Icons.home_outlined),
+      //           label: 'Home',
+      //         ),
+      //         BottomNavigationBarItem(
+      //           icon: Icon(Icons.folder_copy_outlined),
+      //           label: 'Files',
+      //         ),
+      //         BottomNavigationBarItem(
+      //           icon: Icon(Icons.message_outlined),
+      //           label: 'Message',
+      //         ),
+      //         BottomNavigationBarItem(
+      //           icon: Icon(Icons.playlist_add_sharp),
+      //           label: 'To-do',
+      //         ),
+      //         BottomNavigationBarItem(
+      //           icon: Icon(Icons.playlist_add_sharp),
+      //           label: 'Billing',
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 }
