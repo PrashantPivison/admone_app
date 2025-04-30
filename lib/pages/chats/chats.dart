@@ -1,5 +1,5 @@
-// lib/ui/dashboard.dart
-
+// // lib/ui/dashboard.dart
+//
 import 'package:flutter/material.dart';
 import 'package:my_app/backend/api_requests/chat_api.dart';
 import 'package:my_app/pages/chats/chat_details.dart';
@@ -105,7 +105,7 @@ class _ChatState extends State<Chats> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         toolbarHeight: 130,
@@ -115,7 +115,7 @@ class _ChatState extends State<Chats> {
           children: [
             Container(color: Theme.of(context).colorScheme.primary),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -136,9 +136,9 @@ class _ChatState extends State<Chats> {
                             .textTheme
                             .headlineMedium
                             ?.copyWith(
-                              fontFamily: 'Poppins',
-                              color: Theme.of(context).colorScheme.onSecondary,
-                            ),
+                          fontFamily: 'Poppins',
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
                       ),
                       const Spacer(),
                       Container(
@@ -156,7 +156,7 @@ class _ChatState extends State<Chats> {
                             Text(
                               'New Message',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 11),
+                              TextStyle(color: Colors.white, fontSize: 11),
                             ),
                           ],
                         ),
@@ -212,16 +212,19 @@ class _ChatState extends State<Chats> {
               child: Column(
                 children: resp.threads
                     .map((t) => Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 5),
-                          child: _buildListItem(context, t: t),
-                        ))
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30, vertical: 5),
+                  child: _buildListItem(context, t: t),
+                ))
                     .toList(),
               ),
             ),
           );
         },
       ),
-    );
+    ), );
   }
 }
+
+
+
