@@ -93,60 +93,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     // final appState = Provider.of<AppState>(context, listen: false);
     final appState = Provider.of<AppState>(context);
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.grey[200],
-      //   title: Image.asset(
-      //     'images/adm_logo.png',
-      //     width: 150.0,
-      //     height: 80.0,
-      //     errorBuilder: (context, error, stackTrace) => const SizedBox(
-      //       width: 150,
-      //       height: 80,
-      //       child: Center(child: Text('ADM Logo')),
-      //     ),
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.notifications),
-      //       color: Colors.blueAccent,
-      //       onPressed: () {
-      //         ScaffoldMessenger.of(context).showSnackBar(
-      //           const SnackBar(content: Text('No new notifications')),
-      //         );
-      //       },
-      //     ),
-      //     Padding(
-      //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      //       child: Text(
-      //         '${appState.userData?['user']?['name'] ?? ''} '
-      //         '${appState.userData?['user']?['surname'] ?? ''}',
-      //         style: const TextStyle(color: Colors.black),
-      //       ),
-      //     ),
-      //     PopupMenuButton<String>(
-      //       onSelected: (value) async {
-      //         if (value == 'logout') {
-      //           // 1) clear your auth state
-      //           await appState.logout();
-      //           // 2) and then blow away everything in the Navigator
-      //           Navigator.of(context).pushAndRemoveUntil(
-      //             MaterialPageRoute(builder: (_) => LoginPage()),
-      //             (route) => false,
-      //           );
-      //         }
-      //       },
-      //       icon: const CircleAvatar(
-      //         backgroundImage: AssetImage('images/user_profile.png'),
-      //       ),
-      //       itemBuilder: (BuildContext context) => const [
-      //         PopupMenuItem(value: 'profile', child: Text('Profile')),
-      //         PopupMenuItem(value: 'settings', child: Text('Settings')),
-      //         PopupMenuItem(value: 'logout', child: Text('Logout')),
-      //       ],
-      //     ),
-      //     const SizedBox(width: 10),
-      //   ],
-      // ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.grey[200],

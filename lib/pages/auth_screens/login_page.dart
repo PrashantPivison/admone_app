@@ -34,13 +34,13 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() {
       _emailError = email.isEmpty
-          ? 'Email is required'
+          ? 'Please enter a valid email address'
           : (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)
               ? 'Enter a valid email'
               : null);
 
       _passwordError = pass.isEmpty
-          ? 'Password is required'
+          ? 'Password must be at least 6 characters long'
           : (pass.length < 6 ? 'Min. 6 characters' : null);
     });
 
@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(_emailError!,
-                      style: const TextStyle(color: Colors.red)),
+                      style: const TextStyle(color: Colors.red ,  fontSize: 14)),
                 ),
               const SizedBox(height: 10),
               _buildPasswordField(),
@@ -123,7 +123,8 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(_passwordError!,
-                      style: const TextStyle(color: Colors.red)),
+                      style: const TextStyle(color: Colors.red ,  fontSize: 14)),
+
                 ),
               const SizedBox(height: 20),
               appState.isLoading

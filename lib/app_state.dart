@@ -87,7 +87,10 @@ class AppState extends ChangeNotifier {
         isLoggedIn = false;
       }
     } catch (e) {
-      errorMessage = e.toString();
+      final raw = e.toString();
+      errorMessage = raw.startsWith('Exception: ')
+          ? raw.substring('Exception: '.length)
+          : raw;
       isLoggedIn = false;
     } finally {
       isLoading = false;

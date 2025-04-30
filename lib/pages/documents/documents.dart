@@ -30,7 +30,7 @@ class _FilesScreenState extends State<FilesScreen> {
 
   bool _isLoadingData = true; // initial fetch
   bool _isLoadingMore = false; // pagination loader
-  int _currentMax = 5; // how many items to show
+  int _currentMax = 2; // how many items to show
   List<_Item> _allItems = [];
   FilesFoldersResponse? _lastResponse;
 
