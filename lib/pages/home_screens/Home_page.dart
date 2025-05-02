@@ -94,7 +94,7 @@ class _DashboardState extends State<HomePage> {
   Widget _buildSection(BuildContext context,
       {required String title, required List<Widget> items}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -243,25 +243,25 @@ class _DashboardState extends State<HomePage> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(children: _buildActionButtons(context)),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           _buildSection(
             context,
             title: 'Pending Payments',
             items: _buildPaymentItems(context),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           _buildSection(
             context,
             title: 'Documents',
             items: _buildDocumentItems(context),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           _buildSection(
             context,
             title: 'Messages',
@@ -324,7 +324,7 @@ class _DashboardState extends State<HomePage> {
                             itemBuilder: (BuildContext context) => [
                               const PopupMenuItem<String>(
                                 value: 'logout',
-                                child: Text('Logout'),
+                                child: Text('Logout' ),
                               ),
                             ],
                           ),

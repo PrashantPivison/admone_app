@@ -140,11 +140,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   // REPLACE your entire build method with this updated design layout:
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onError,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        toolbarHeight: 75,
+        toolbarHeight: 100,
         elevation: 0,
         flexibleSpace: Stack(children: [
           Container(color: Theme.of(context).colorScheme.primary),
@@ -169,10 +169,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                           .textTheme
                           .headlineSmall
                           ?.copyWith(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.onSecondary,
-                          ),
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
                     ),
                   ),
                 ]),
@@ -190,11 +190,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                               .textTheme
                               .labelSmall
                               ?.copyWith(
-                                fontFamily: 'Poppins',
-                                color:
-                                    Theme.of(context).colorScheme.onSecondary,
-                                fontWeight: FontWeight.w500,
-                              ),
+                            fontFamily: 'Poppins',
+                            color:
+                            Theme.of(context).colorScheme.onSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       );
                     }
@@ -230,6 +230,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 15),
+
               height: 120,
               decoration: BoxDecoration(
                 border: Border.all(color: CustomColors.chatsborder, width: 1),
@@ -297,25 +298,25 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                           child: Center(
                             child: _sending
                                 ? const SizedBox(
-                                    width: 14,
-                                    height: 14,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    ),
-                                  )
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white),
+                              ),
+                            )
                                 : Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(Icons.arrow_forward,
-                                          size: 14, color: Colors.white),
-                                      const SizedBox(width: 6),
-                                      Text('Send',
-                                          style: btntext.copyWith(
-                                              color: Colors.white)),
-                                    ],
-                                  ),
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.arrow_forward,
+                                    size: 14, color: Colors.white),
+                                const SizedBox(width: 6),
+                                Text('Send',
+                                    style: btntext.copyWith(
+                                        color: Colors.white)),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -329,16 +330,17 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         child: Text(
                           'Selected: ${_pickedPaths.first.split('/').last}',
                           style:
-                              const TextStyle(fontSize: 12, color: Colors.grey),
+                          const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                       ),
                     ),
                 ],
               ),
             ),
+            SizedBox(height: 10,)
           ],
         ),
       ),
-    );
+    ),);
   }
 }

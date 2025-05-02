@@ -122,7 +122,11 @@ class _TodoListState extends State<TodoList> {
                     final confirm = await showDialog<bool>(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                        title: const Text('Mark task complete?'),
+                        title: const Text('Mark task complete?' , style: TextStyle(
+                          fontFamily: 'Inter',
+                          color: CustomColors.text,
+                          fontWeight: FontWeight.w600,
+                        ), ),
                         content: Text(task.taskDetails),
                         actions: [
                           TextButton(
