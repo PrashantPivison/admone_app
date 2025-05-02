@@ -184,40 +184,66 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildEmailField() {
     return SizedBox(
       height: 45,
+      // child: TextField(
+      //   controller: _emailCtrl,
+      //   keyboardType: TextInputType.emailAddress,
+      //   decoration: _buildInputDecoration(
+      //     labelText: 'Email address',
+      //     prefixIcon: Icons.mail_outlined,
+      //   ),
+      //   onChanged: (_) => setState(() => _emailError = null),
+      // ),
+
       child: TextField(
         controller: _emailCtrl,
         keyboardType: TextInputType.emailAddress,
-        decoration: _buildInputDecoration(
+        decoration: buildInputDecoration(
           labelText: 'Email address',
           prefixIcon: Icons.mail_outlined,
         ),
-        onChanged: (_) => setState(() => _emailError = null),
       ),
+
     );
   }
 
   Widget _buildPasswordField() {
     return SizedBox(
       height: 45,
+      // child: TextField(
+      //   controller: _passwordCtrl,
+      //   obscureText: _obscurePassword,
+      //   decoration: _buildInputDecoration(
+      //     labelText: 'Password',
+      //     prefixIcon: Icons.lock_open_rounded,
+      //   ).copyWith(
+      //     suffixIcon: IconButton(
+      //       icon: Icon(
+      //         _obscurePassword ? Icons.visibility : Icons.visibility_off,
+      //         color: CustomColors.textField,
+      //         size: 20,
+      //       ),
+      //       onPressed: () =>
+      //           setState(() => _obscurePassword = !_obscurePassword),
+      //     ),
+      //   ),
+      //   onChanged: (_) => setState(() => _passwordError = null),
+      // ),
+
       child: TextField(
         controller: _passwordCtrl,
         obscureText: _obscurePassword,
-        decoration: _buildInputDecoration(
+        decoration: buildInputDecoration(
           labelText: 'Password',
           prefixIcon: Icons.lock_open_rounded,
-        ).copyWith(
-          suffixIcon: IconButton(
-            icon: Icon(
-              _obscurePassword ? Icons.visibility : Icons.visibility_off,
-              color: CustomColors.textField,
-              size: 20,
-            ),
-            onPressed: () =>
-                setState(() => _obscurePassword = !_obscurePassword),
-          ),
+          suffixIcon: _obscurePassword ? Icons.visibility : Icons.visibility_off,
+          onSuffixTap: () =>
+              setState(() => _obscurePassword = !_obscurePassword),
         ),
         onChanged: (_) => setState(() => _passwordError = null),
       ),
+
+
+
     );
   }
 

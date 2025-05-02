@@ -115,3 +115,66 @@ final ThemeData customTheme = ThemeData(
   //   buttonColor: const Color(0xFF1F468E), // Default button color
   // ),
 );
+
+//
+// InputDecoration buildInputDecoration({
+//   required String labelText,
+//   required IconData prefixIcon,
+// }) {
+//   return InputDecoration(
+//     labelText: labelText,
+//     labelStyle: TextStyle(color: CustomColors.textField),
+//     filled: true,
+//     fillColor: Colors.white,
+//     prefixIcon: Icon(prefixIcon, color: CustomColors.textField, size: 20),
+//     enabledBorder: OutlineInputBorder(
+//       borderRadius: BorderRadius.circular(10),
+//       borderSide: BorderSide(color: CustomColors.textField, width: 1.0),
+//     ),
+//     focusedBorder: OutlineInputBorder(
+//       borderRadius: BorderRadius.circular(10),
+//       borderSide: BorderSide(
+//         color: CustomColors.textField.withOpacity(0.8),
+//         width: 2.0,
+//       ),
+//     ),
+//     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+//     contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+//   );
+// }
+
+
+InputDecoration buildInputDecoration({
+  required String labelText,
+  required IconData prefixIcon,
+  IconData? suffixIcon,
+  VoidCallback? onSuffixTap,
+}) {
+  return InputDecoration(
+    labelText: labelText,
+    labelStyle: TextStyle(color: CustomColors.textField),
+    filled: true,
+    fillColor: Colors.white,
+    prefixIcon: Icon(prefixIcon, color: CustomColors.textField, size: 20),
+    suffixIcon: suffixIcon != null
+        ? GestureDetector(
+      onTap: onSuffixTap,
+      child: Icon(suffixIcon, color: CustomColors.textField, size: 20),
+    )
+        : null,
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: CustomColors.textField, width: 1.0),
+      // borderSide: BorderSide(color: Colors.red, width: 1.0),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(
+        color: CustomColors.textField.withOpacity(0.8),
+        width: 2.0,
+      ),
+    ),
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+  );
+}

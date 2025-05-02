@@ -282,27 +282,39 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ),
                 const SizedBox(height: 30),
 
+                // TextField(
+                //   controller: _emailCtrl,
+                //   keyboardType: TextInputType.emailAddress,
+                //   decoration: InputDecoration(
+                //     labelText: 'Email address',
+                //     labelStyle: TextStyle(color: CustomColors.textField),
+                //     counterText: '',
+                //     filled: true,
+                //     fillColor: Colors.white,
+                //     prefixIcon: Icon(Icons.mail_outlined, color: CustomColors.textField),
+                //     enabledBorder: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(10),
+                //       borderSide: BorderSide(color: CustomColors.textField),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(10),
+                //       borderSide: BorderSide(
+                //         color: CustomColors.textField.withOpacity(0.8),
+                //         width: 2,
+                //       ),
+                //     ),
+                //   ),
+                //   onChanged: (_) {
+                //     if (_emailError != null) {
+                //       setState(() => _emailError = null);
+                //     }
+                //   },
+                // ),
+
                 TextField(
-                  controller: _emailCtrl,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
+                  decoration: buildInputDecoration(
                     labelText: 'Email address',
-                    labelStyle: TextStyle(color: CustomColors.textField),
-                    counterText: '',
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: Icon(Icons.mail_outlined, color: CustomColors.textField),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: CustomColors.textField),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        color: CustomColors.textField.withOpacity(0.8),
-                        width: 2,
-                      ),
-                    ),
+                    prefixIcon: Icons.mail_outlined,
                   ),
                   onChanged: (_) {
                     if (_emailError != null) {
@@ -310,6 +322,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     }
                   },
                 ),
+
+
+
                 if (_emailError != null) ...[
                   const SizedBox(height: 4),
                   Padding(

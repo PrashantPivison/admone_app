@@ -241,47 +241,57 @@ class _LoginPasscodeState extends State<LoginPasscode> {
   Widget _buildPasscodeField() {
     return SizedBox(
       height: 45,
+      // child: TextField(
+      //   controller: _passcodeController,
+      //   obscureText: true,
+      //   keyboardType: TextInputType.number,
+      //   maxLength: 4,
+      //   // textAlign: TextAlign.center,
+      //   // style: const TextStyle(
+      //   //   fontSize: 24,
+      //   //   letterSpacing: 8,
+      //   // ),
+      //   decoration: _buildInputDecoration(
+      //     hintText: 'Enter passcode',
+      //     prefixIcon: Icons.lock_outline,
+      //   ),
+      // ),
+
       child: TextField(
-        controller: _passcodeController,
-        obscureText: true,
-        keyboardType: TextInputType.number,
-        maxLength: 4,
-        // textAlign: TextAlign.center,
-        // style: const TextStyle(
-        //   fontSize: 24,
-        //   letterSpacing: 8,
-        // ),
-        decoration: _buildInputDecoration(
-          hintText: 'Enter passcode',
+          controller: _passcodeController,
+          obscureText: true,
+          keyboardType: TextInputType.number,
+          decoration: buildInputDecoration(
+          labelText: 'Enter passcode',
           prefixIcon: Icons.lock_outline,
         ),
       ),
     );
   }
 
-  InputDecoration _buildInputDecoration({
-    required String hintText,
-    required IconData prefixIcon,
-  }) {
-    return InputDecoration(
-      hintText: hintText,
-      counterText: '',
-      filled: true,
-      fillColor: Colors.white,
-      prefixIcon: Icon(prefixIcon, color: CustomColors.textField),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: CustomColors.textField),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(
-          color: CustomColors.textField.withOpacity(0.8),
-          width: 2,
-        ),
-      ),
-    );
-  }
+  // InputDecoration _buildInputDecoration({
+  //   required String hintText,
+  //   required IconData prefixIcon,
+  // }) {
+  //   return InputDecoration(
+  //     hintText: hintText,
+  //     counterText: '',
+  //     filled: true,
+  //     fillColor: Colors.white,
+  //     prefixIcon: Icon(prefixIcon, color: CustomColors.textField),
+  //     enabledBorder: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(10),
+  //       borderSide: BorderSide(color: CustomColors.textField),
+  //     ),
+  //     focusedBorder: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(10),
+  //       borderSide: BorderSide(
+  //         color: CustomColors.textField.withOpacity(0.8),
+  //         width: 2,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildUnlockButton() {
     return SizedBox(

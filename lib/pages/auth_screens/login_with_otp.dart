@@ -237,14 +237,23 @@ class _LoginWithOtpState extends State<LoginWithOtp> {
 
   Widget _buildEmailField() => SizedBox(
         height: 45,
-        child: TextField(
-          controller: _emailCtrl,
-          keyboardType: TextInputType.emailAddress,
-          decoration: _buildInputDecoration(
-            labelText: 'Email address',
-            prefixIcon: Icons.mail_outlined,
-          ),
-        ),
+        // child: TextField(
+        //   controller: _emailCtrl,
+        //   keyboardType: TextInputType.emailAddress,
+        //   decoration: _buildInputDecoration(
+        //     labelText: 'Email address',
+        //     prefixIcon: Icons.mail_outlined,
+        //   ),
+        // ),
+
+    child: TextField(
+      controller: _emailCtrl,
+      keyboardType: TextInputType.emailAddress,
+      decoration: buildInputDecoration(
+        labelText: 'Email address',
+        prefixIcon: Icons.mail_outlined,
+      ),
+    ),
       );
 
   Widget _buildOtpField() => SizedBox(
@@ -281,30 +290,30 @@ class _LoginWithOtpState extends State<LoginWithOtp> {
     );
   }
 
-  InputDecoration _buildInputDecoration({
-    required String labelText,
-    required IconData prefixIcon,
-  }) {
-    return InputDecoration(
-      labelText: labelText,
-      labelStyle: TextStyle(color: CustomColors.textField),
-      counterText: '',
-      filled: true,
-      fillColor: Colors.white,
-      prefixIcon: Icon(prefixIcon, color: CustomColors.textField),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: CustomColors.textField),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(
-          color: CustomColors.textField.withOpacity(0.8),
-          width: 2,
-        ),
-      ),
-    );
-  }
+  // InputDecoration _buildInputDecoration({
+  //   required String labelText,
+  //   required IconData prefixIcon,
+  // }) {
+  //   return InputDecoration(
+  //     labelText: labelText,
+  //     labelStyle: TextStyle(color: CustomColors.textField),
+  //     counterText: '',
+  //     filled: true,
+  //     fillColor: Colors.white,
+  //     prefixIcon: Icon(prefixIcon, color: CustomColors.textField),
+  //     enabledBorder: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(10),
+  //       borderSide: BorderSide(color: CustomColors.textField),
+  //     ),
+  //     focusedBorder: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(10),
+  //       borderSide: BorderSide(
+  //         color: CustomColors.textField.withOpacity(0.8),
+  //         width: 2,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildSendOtpButton() => SizedBox(
         width: double.infinity,

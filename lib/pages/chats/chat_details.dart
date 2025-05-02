@@ -278,3 +278,142 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 }
+
+
+
+
+// import 'package:flutter/material.dart';
+// import 'package:file_picker/file_picker.dart';
+//
+// class ChatScreen extends StatefulWidget {
+//   final String threadId;
+//   final String threadSubject;
+//   final String clientName;
+//
+//   const ChatScreen({
+//     super.key,
+//     required this.threadId,
+//     required this.threadSubject,
+//     required this.clientName,
+//   });
+//
+//   @override
+//   State<ChatScreen> createState() => _ChatScreenState();
+// }
+//
+//
+// class _ChatScreenState extends State<ChatScreen> {
+//   final List<Map<String, dynamic>> messages = [];
+//   final TextEditingController _messageController = TextEditingController();
+//
+//   void _sendMessage() {
+//     if (_messageController.text.trim().isEmpty) return;
+//
+//     setState(() {
+//       messages.insert(0, {
+//         'text': _messageController.text.trim(),
+//         'time': 'Just now',
+//         'isMe': true,
+//         'type': 'text',
+//       });
+//     });
+//
+//     _messageController.clear();
+//   }
+//
+//   void _attachFile() async {
+//     FilePickerResult? result = await FilePicker.platform.pickFiles();
+//
+//     if (result != null && result.files.single.path != null) {
+//       String fileName = result.files.single.name;
+//
+//       setState(() {
+//         messages.insert(0, {
+//           'text': fileName,
+//           'time': 'Just now',
+//           'isMe': true,
+//           'type': 'file',
+//         });
+//       });
+//     }
+//   }
+//
+//   Widget _buildMessageBubble(Map<String, dynamic> message) {
+//     bool isMe = message['isMe'] ?? false;
+//     bool isFile = message['type'] == 'file';
+//
+//     return Align(
+//       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+//       child: Container(
+//         margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+//         padding: const EdgeInsets.all(10.0),
+//         decoration: BoxDecoration(
+//           color: isMe ? Colors.blueAccent : Colors.grey[300],
+//           borderRadius: BorderRadius.circular(12.0),
+//         ),
+//         child: isFile
+//             ? Row(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             const Icon(Icons.attach_file, color: Colors.white),
+//             const SizedBox(width: 8),
+//             Text(
+//               message['text'],
+//               style: const TextStyle(color: Colors.white),
+//             ),
+//           ],
+//         )
+//             : Text(
+//           message['text'],
+//           style: const TextStyle(color: Colors.white),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Chat Screen'),
+//       ),
+//       body: Column(
+//         children: [
+//           Expanded(
+//             child: ListView.builder(
+//               reverse: true,
+//               itemCount: messages.length,
+//               itemBuilder: (context, index) {
+//                 return _buildMessageBubble(messages[index]);
+//               },
+//             ),
+//           ),
+//           const Divider(height: 1),
+//           Container(
+//             padding: const EdgeInsets.symmetric(horizontal: 8.0),
+//             color: Colors.white,
+//             child: Row(
+//               children: [
+//                 IconButton(
+//                   icon: const Icon(Icons.attach_file),
+//                   onPressed: _attachFile,
+//                 ),
+//                 Expanded(
+//                   child: TextField(
+//                     controller: _messageController,
+//                     decoration:
+//                     const InputDecoration.collapsed(hintText: 'Message...'),
+//                   ),
+//                 ),
+//                 IconButton(
+//                   icon: const Icon(Icons.send),
+//                   onPressed: _sendMessage,
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

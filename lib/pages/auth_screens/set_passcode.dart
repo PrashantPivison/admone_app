@@ -216,43 +216,56 @@ class _SetPasscodeScreenState extends State<SetPasscodeScreen> {
   Widget _buildPasscodeField(String labelText, TextEditingController controller) {
     return SizedBox(
       height: 45,
+      // child: TextField(
+      //   controller: controller,
+      //   obscureText: true,
+      //   keyboardType: TextInputType.number,
+      //   maxLength: 4,
+      //   decoration: _buildInputDecoration(
+      //     labelText: labelText,
+      //     prefixIcon: Icons.lock_outline,
+      //   ),
+      // ),
+
       child: TextField(
         controller: controller,
         obscureText: true,
         keyboardType: TextInputType.number,
         maxLength: 4,
-        decoration: _buildInputDecoration(
+        decoration: buildInputDecoration(
           labelText: labelText,
           prefixIcon: Icons.lock_outline,
         ),
       ),
+
+
     );
   }
 
-  InputDecoration _buildInputDecoration({
-    required String labelText,
-    required IconData prefixIcon,
-  }) {
-    return InputDecoration(
-      labelText: labelText,
-      labelStyle: TextStyle(color: CustomColors.textField),
-      counterText: '',
-      filled: true,
-      fillColor: Colors.white,
-      prefixIcon: Icon(prefixIcon, color: CustomColors.textField),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: CustomColors.textField),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(
-          color: CustomColors.textField.withOpacity(0.8),
-          width: 2,
-        ),
-      ),
-    );
-  }
+  // InputDecoration _buildInputDecoration({
+  //   required String labelText,
+  //   required IconData prefixIcon,
+  // }) {
+  //   return InputDecoration(
+  //     labelText: labelText,
+  //     labelStyle: TextStyle(color: CustomColors.textField),
+  //     counterText: '',
+  //     filled: true,
+  //     fillColor: Colors.white,
+  //     prefixIcon: Icon(prefixIcon, color: CustomColors.textField),
+  //     enabledBorder: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(10),
+  //       borderSide: BorderSide(color: CustomColors.textField),
+  //     ),
+  //     focusedBorder: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(10),
+  //       borderSide: BorderSide(
+  //         color: CustomColors.textField.withOpacity(0.8),
+  //         width: 2,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildSaveButton() {
     return SizedBox(
