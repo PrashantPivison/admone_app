@@ -176,6 +176,8 @@
 
 // lib/main.dart
 
+// lib/main.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:local_auth/local_auth.dart';
@@ -184,14 +186,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_state.dart';
 import 'pages/auth_screens/login_page.dart';
-import 'pages/home_screens/home_page.dart';
-import 'pages/auth_screens/login_biometric.dart';
-import 'pages/auth_screens/set_passcode.dart';
 import 'pages/todo/todo_list.dart';
 import 'pages/documents/documents.dart';
 import 'pages/company_data/companydata.dart';
 import 'pages/chats/chats.dart';
 import 'config/theme.dart';
+import 'pages/home_screens/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -213,7 +213,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final LocalAuthentication _localAuth = LocalAuthentication();
-  bool _didAuthenticateThisSession = false;
+
+  // Track whether we’ve been backgrounded
+  bool _didBackground = false;
 
   @override
   void initState() {
@@ -231,32 +233,34 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final appState = Provider.of<AppState>(context, listen: false);
 
+    if (state == AppLifecycleState.paused) {
+      // we’re leaving the app
+      _didBackground = true;
+    }
+
     if (state == AppLifecycleState.resumed &&
-            !_didAuthenticateThisSession &&
-            appState.isLoggedIn &&
-            appState.useDeviceAuth // ← only if they opted in
-        ) {
-      _didAuthenticateThisSession = true;
+        _didBackground &&
+        appState.isLoggedIn &&
+        appState.useDeviceAuth) {
+      // only if we *did* background previously
+      _didBackground = false;
       _authenticate();
     }
   }
 
   Future<void> _authenticate() async {
     try {
-      final didAuth = await _localAuth.authenticate(
+      final did = await _localAuth.authenticate(
         localizedReason: 'Please authenticate to continue',
         options: const AuthenticationOptions(
-          biometricOnly: false, // allow PIN/pattern/password fallback
+          biometricOnly: false,
           stickyAuth: true,
           useErrorDialogs: true,
         ),
       );
-      if (!didAuth) {
-        // If they cancel or fail, exit the app
-        SystemNavigator.pop();
-      }
+      if (!did) SystemNavigator.pop();
     } on PlatformException {
-      // No enrolled biometrics *and* no device lock → let them in
+      // no enrolled auth—let them in
     }
   }
 
@@ -270,8 +274,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           if (!appState.isLoggedIn) {
             return const LoginPage();
           }
-
-          // Already logged in: auth will trigger on resume
+          // Logged in → always go straight to the main nav;
+          // auth hack happens on lifecycle resume above.
           return const BottomNavScreen();
         },
       ),
