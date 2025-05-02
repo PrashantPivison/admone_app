@@ -7,11 +7,14 @@ class AppState extends ChangeNotifier {
   bool isLoading = false;
   bool isLoggedIn = false;
   bool biometricPassed = false;
-  bool passcodeChecked = false; // Have we shown passcode screen?
-  bool passcodePassed = false; // Did they enter it OK?
-  bool passcodeSet = false; // Has user ever set a PIN?
+  bool passcodeChecked = false;
+  bool passcodePassed = false;
+  bool passcodeSet = false;
   bool biometricSetupDone = false;
   String errorMessage = '';
+
+  bool _useDeviceAuth = false;
+  bool get useDeviceAuth => _useDeviceAuth;
 
   Map<String, dynamic>? userData;
   String? token;
@@ -220,6 +223,13 @@ class AppState extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final stored = prefs.getString('user_passcode') ?? '';
     return stored == attempt;
+  }
+
+  Future<void> setUseDeviceAuth(bool enable) async {
+    _useDeviceAuth = enable;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('use_device_auth', enable);
+    notifyListeners();
   }
 
   // ================ Final Auth Check ================

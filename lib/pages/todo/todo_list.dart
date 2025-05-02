@@ -29,7 +29,7 @@ class _TodoListState extends State<TodoList> {
   Widget _buildSection(BuildContext context,
       {required String title, required List<Widget> items}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -198,7 +198,7 @@ class _TodoListState extends State<TodoList> {
               items: _buildPendingItems(context, pending),
             ),
           if (completed.isNotEmpty) ...[
-            const SizedBox(height: 20),
+            // const SizedBox(height: 20),
             _buildSection(
               context,
               title: 'Completed',

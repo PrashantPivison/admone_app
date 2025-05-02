@@ -1,6 +1,6 @@
-// lib/pages/auth_screens/login_page.dart
-
 import 'package:flutter/material.dart';
+import 'package:my_app/main.dart';
+import 'package:my_app/pages/auth_screens/auth_setup_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:my_app/app_state.dart';
 import '../../config/Animation/righttoleft_animation.dart';
@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordCtrl = TextEditingController();
   String? _emailError;
   String? _passwordError;
+  bool _obscurePassword = true; // toggle visibility
 
   bool get _canSubmit =>
       (_emailError == null && _passwordError == null) &&
@@ -51,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (appState.isLoggedIn) {
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const MainFlowRedirector()),
+        MaterialPageRoute(builder: (_) => const AuthSetupScreen()),
         (route) => false,
       );
     }
@@ -60,7 +61,6 @@ class _LoginPageState extends State<LoginPage> {
   InputDecoration _buildInputDecoration({
     required String labelText,
     required IconData prefixIcon,
-    IconData? suffixIcon,
   }) {
     return InputDecoration(
       labelText: labelText,
@@ -68,9 +68,6 @@ class _LoginPageState extends State<LoginPage> {
       filled: true,
       fillColor: Colors.white,
       prefixIcon: Icon(prefixIcon, color: CustomColors.textField, size: 20),
-      suffixIcon: suffixIcon != null
-          ? Icon(suffixIcon, color: CustomColors.textField, size: 20)
-          : null,
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide(color: CustomColors.textField, width: 1.0),
@@ -116,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(_emailError!,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.red ,  fontSize: 14)),
+                      style: const TextStyle(color: Colors.red, fontSize: 14)),
                 ),
               const SizedBox(height: 10),
               _buildPasswordField(),
@@ -125,8 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(_passwordError!,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.red ,  fontSize: 14)),
-
+                      style: const TextStyle(color: Colors.red, fontSize: 14)),
                 ),
               const SizedBox(height: 20),
               appState.isLoading
@@ -205,11 +201,20 @@ class _LoginPageState extends State<LoginPage> {
       height: 45,
       child: TextField(
         controller: _passwordCtrl,
-        obscureText: true,
+        obscureText: _obscurePassword,
         decoration: _buildInputDecoration(
           labelText: 'Password',
           prefixIcon: Icons.lock_open_rounded,
-          suffixIcon: Icons.visibility,
+        ).copyWith(
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscurePassword ? Icons.visibility : Icons.visibility_off,
+              color: CustomColors.textField,
+              size: 20,
+            ),
+            onPressed: () =>
+                setState(() => _obscurePassword = !_obscurePassword),
+          ),
         ),
         onChanged: (_) => setState(() => _passwordError = null),
       ),

@@ -213,7 +213,7 @@ class _ChatState extends State<Chats> {
                 children: resp.threads
                     .map((t) => Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 30, vertical: 5),
+                      horizontal: 20, vertical: 5),
                   child: _buildListItem(context, t: t),
                 ))
                     .toList(),

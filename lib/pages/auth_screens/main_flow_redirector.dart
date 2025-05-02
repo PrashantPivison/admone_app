@@ -17,22 +17,22 @@ class MainFlowRedirector extends StatelessWidget {
           return const LoginPage();
         }
 
-        // 🛑 Very Important → First check if setup is done or not
-        if (!appState.biometricSetupDone) {
-          return LoginBiometric(); // First time ask
-        }
-        if (appState.passcodeSet && !appState.passcodePassed) {
-          return LoginPasscode(); // Passcode authentication
-        }
-        // ✅ Now biometric/passcode setup is done
+        // // 🛑 Very Important → First check if setup is done or not
+        // if (!appState.biometricSetupDone) {
+        //   return LoginBiometric(); // First time ask
+        // }
+        // if (appState.passcodeSet && !appState.passcodePassed) {
+        //   return LoginPasscode(); // Passcode authentication
+        // }
+        // // ✅ Now biometric/passcode setup is done
 
-        if (appState.biometricPassed || appState.passcodePassed) {
-          return const BottomNavScreen(); // Already authenticated
-        }
+        // if (appState.biometricPassed || appState.passcodePassed) {
+        //   return const BottomNavScreen(); // Already authenticated
+        // }
 
-        if (appState.passcodeSet) {
-          return LoginPasscode(); // Authenticate via passcode
-        }
+        // if (appState.passcodeSet) {
+        //   return LoginPasscode(); // Authenticate via passcode
+        // }
 
         return LoginBiometric(); // Authenticate via biometric
       },
