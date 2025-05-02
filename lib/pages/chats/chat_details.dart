@@ -137,6 +137,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   @override
+  // REPLACE your entire build method with this updated design layout:
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onError,
@@ -206,214 +208,137 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
-        child: Column(children: [
-          Expanded(
-            child: FutureBuilder<ChatDetails>(
-              future: _futureDetails,
-              builder: (ctx, s) {
-                if (s.connectionState != ConnectionState.done) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (s.hasError) {
-                  return const Center(child: Text('Failed to load messages'));
-                }
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  itemCount: s.data!.messages.length,
-                  itemBuilder: (_, i) => _buildMessage(s.data!.messages[i]),
-                );
-              },
+        child: Column(
+          children: [
+            Expanded(
+              child: FutureBuilder<ChatDetails>(
+                future: _futureDetails,
+                builder: (ctx, s) {
+                  if (s.connectionState != ConnectionState.done) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (s.hasError) {
+                    return const Center(child: Text('Failed to load messages'));
+                  }
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    itemCount: s.data!.messages.length,
+                    itemBuilder: (_, i) => _buildMessage(s.data!.messages[i]),
+                  );
+                },
+              ),
             ),
-          ),
-
-          // bottom input + attach + send
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-            decoration: BoxDecoration(
-              color: CustomColors.chatsgrey,
-              border: Border.all(color: CustomColors.chatsborder, width: 1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Row(children: [
-                Expanded(
-                  child: TextField(
-                    controller: _msgCtrl,
-                    decoration: const InputDecoration(
-                      hintText: "Type your message here...",
-                      border: InputBorder.none,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              height: 120,
+              decoration: BoxDecoration(
+                border: Border.all(color: CustomColors.chatsborder, width: 1),
+                borderRadius: BorderRadius.circular(12),
+                color: CustomColors.chatsgrey,
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _msgCtrl,
+                          decoration: const InputDecoration(
+                            hintText: "Type your message here...",
+                            hintStyle: TextStyle(
+                              color: Color(0xFFAEAEAE),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: _attachFile,
+                        child: Container(
+                          height: 30,
+                          width: 80,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.black, width: 1),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.attach_file,
+                                  size: 14, color: Colors.black),
+                              const SizedBox(width: 3),
+                              Text('Attach',
+                                  style: btntext.copyWith(color: Colors.black)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: _sending ? null : _sendMessage,
+                        child: Container(
+                          height: 30,
+                          width: 80,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: _sending
+                                ? const SizedBox(
+                                    width: 14,
+                                    height: 14,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                  )
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(Icons.arrow_forward,
+                                          size: 14, color: Colors.white),
+                                      const SizedBox(width: 6),
+                                      Text('Send',
+                                          style: btntext.copyWith(
+                                              color: Colors.white)),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (_pickedPaths.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Selected: ${_pickedPaths.first.split('/').last}',
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.attach_file),
-                  onPressed: _attachFile,
-                ),
-              ]),
-              if (_pickedPaths.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    'Selected: ${_pickedPaths.first.split('/').last}',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ),
-              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                ElevatedButton(
-                  onPressed: _sending ? null : _sendMessage,
-                  child: _sending
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                              strokeWidth: 2, color: Colors.white),
-                        )
-                      : const Text('Send'),
-                ),
-              ]),
-            ]),
-          ),
-        ]),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-
-
-
-// import 'package:flutter/material.dart';
-// import 'package:file_picker/file_picker.dart';
-//
-// class ChatScreen extends StatefulWidget {
-//   final String threadId;
-//   final String threadSubject;
-//   final String clientName;
-//
-//   const ChatScreen({
-//     super.key,
-//     required this.threadId,
-//     required this.threadSubject,
-//     required this.clientName,
-//   });
-//
-//   @override
-//   State<ChatScreen> createState() => _ChatScreenState();
-// }
-//
-//
-// class _ChatScreenState extends State<ChatScreen> {
-//   final List<Map<String, dynamic>> messages = [];
-//   final TextEditingController _messageController = TextEditingController();
-//
-//   void _sendMessage() {
-//     if (_messageController.text.trim().isEmpty) return;
-//
-//     setState(() {
-//       messages.insert(0, {
-//         'text': _messageController.text.trim(),
-//         'time': 'Just now',
-//         'isMe': true,
-//         'type': 'text',
-//       });
-//     });
-//
-//     _messageController.clear();
-//   }
-//
-//   void _attachFile() async {
-//     FilePickerResult? result = await FilePicker.platform.pickFiles();
-//
-//     if (result != null && result.files.single.path != null) {
-//       String fileName = result.files.single.name;
-//
-//       setState(() {
-//         messages.insert(0, {
-//           'text': fileName,
-//           'time': 'Just now',
-//           'isMe': true,
-//           'type': 'file',
-//         });
-//       });
-//     }
-//   }
-//
-//   Widget _buildMessageBubble(Map<String, dynamic> message) {
-//     bool isMe = message['isMe'] ?? false;
-//     bool isFile = message['type'] == 'file';
-//
-//     return Align(
-//       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-//       child: Container(
-//         margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-//         padding: const EdgeInsets.all(10.0),
-//         decoration: BoxDecoration(
-//           color: isMe ? Colors.blueAccent : Colors.grey[300],
-//           borderRadius: BorderRadius.circular(12.0),
-//         ),
-//         child: isFile
-//             ? Row(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             const Icon(Icons.attach_file, color: Colors.white),
-//             const SizedBox(width: 8),
-//             Text(
-//               message['text'],
-//               style: const TextStyle(color: Colors.white),
-//             ),
-//           ],
-//         )
-//             : Text(
-//           message['text'],
-//           style: const TextStyle(color: Colors.white),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Chat Screen'),
-//       ),
-//       body: Column(
-//         children: [
-//           Expanded(
-//             child: ListView.builder(
-//               reverse: true,
-//               itemCount: messages.length,
-//               itemBuilder: (context, index) {
-//                 return _buildMessageBubble(messages[index]);
-//               },
-//             ),
-//           ),
-//           const Divider(height: 1),
-//           Container(
-//             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-//             color: Colors.white,
-//             child: Row(
-//               children: [
-//                 IconButton(
-//                   icon: const Icon(Icons.attach_file),
-//                   onPressed: _attachFile,
-//                 ),
-//                 Expanded(
-//                   child: TextField(
-//                     controller: _messageController,
-//                     decoration:
-//                     const InputDecoration.collapsed(hintText: 'Message...'),
-//                   ),
-//                 ),
-//                 IconButton(
-//                   icon: const Icon(Icons.send),
-//                   onPressed: _sendMessage,
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
