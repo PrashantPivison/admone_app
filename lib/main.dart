@@ -304,7 +304,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     return Scaffold(
       body: _pages[_currentIndex],
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
+        padding: const EdgeInsets.fromLTRB(15, 0, 15, 40),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: BottomNavigationBar(
