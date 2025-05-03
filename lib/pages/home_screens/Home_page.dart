@@ -113,19 +113,19 @@ class _DashboardState extends State<HomePage> {
     );
   }
 
-  List<Widget> _buildPaymentItems(BuildContext context) {
-    return [
-      _buildListItem(
-        context,
-        gicon: Icons.receipt_long_outlined,
-        icon: null,
-        title: 'Invoice #7897AA112399...',
-        subtitle: 'Unpaid',
-        amount: '12,122',
-      ),
-      const SizedBox(height: 10),
-    ];
-  }
+  // List<Widget> _buildPaymentItems(BuildContext context) {
+  //   return [
+  //     _buildListItem(
+  //       context,
+  //       gicon: Icons.receipt_long_outlined,
+  //       icon: null,
+  //       title: 'Invoice #7897AA112399...',
+  //       subtitle: 'Unpaid',
+  //       amount: '12,122',
+  //     ),
+  //     const SizedBox(height: 10),
+  //   ];
+  // }
 
   List<Widget> _buildDocumentItems(BuildContext context) {
     if (_loading) return [const Center(child: CircularProgressIndicator())];
@@ -250,21 +250,21 @@ class _DashboardState extends State<HomePage> {
             ),
           ),
           const SizedBox(height: 15),
-          _buildSection(
-            context,
-            title: 'Pending Payments',
-            items: _buildPaymentItems(context),
-          ),
+          // _buildSection(
+          //   context,
+          //   title: 'Pending Payments',
+          //   items: _buildPaymentItems(context),
+          // ),
           const SizedBox(height: 15),
           _buildSection(
             context,
-            title: 'Documents',
+            title: 'Recent Files',
             items: _buildDocumentItems(context),
           ),
           const SizedBox(height: 15),
           _buildSection(
             context,
-            title: 'Messages',
+            title: 'Recent Messages',
             items: _buildMessaggesItems(context),
           ),
         ],
@@ -324,7 +324,7 @@ class _DashboardState extends State<HomePage> {
                             itemBuilder: (BuildContext context) => [
                               const PopupMenuItem<String>(
                                 value: 'logout',
-                                child: Text('Logout' ),
+                                child: Text('Logout'),
                               ),
                             ],
                           ),

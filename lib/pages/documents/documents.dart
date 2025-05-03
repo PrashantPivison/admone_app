@@ -714,8 +714,10 @@
 
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:my_app/main.dart';
 import 'package:my_app/pages/documents/document_model.dart';
 import 'package:my_app/pages/documents/preview_page.dart';
+import 'package:my_app/pages/home_screens/Home_page.dart';
 import '../../config/theme.dart';
 
 /// Wraps a folder or file for unified display
@@ -942,7 +944,32 @@ class _FilesScreenState extends State<FilesScreen> {
               child: Column(children: [
                 Row(children: [
                   GestureDetector(
-                    onTap: () => Navigator.pop(context),
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      // Go back up in breadcrumbs if not at root
+                      if (_lastResponse != null &&
+                          _lastResponse!.breadcrumbs.isNotEmpty) {
+                        final breadcrumbs = _lastResponse!.breadcrumbs;
+                        if (breadcrumbs.length >= 2) {
+                          // Go back to previous folder
+                          _enterFolder(breadcrumbs[breadcrumbs.length - 2].id);
+                        } else if (breadcrumbs.length == 1) {
+                          // Go back to client level
+                          _enterClient(breadcrumbs.first.clientId);
+                        } else {
+                          // Already at client level — go home
+                          _goHome();
+                        }
+                      } else {
+                        // At root — pop the screen
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const BottomNavScreen()),
+                          (route) => false,
+                        );
+                      }
+                    },
                     child: const Icon(Icons.arrow_back,
                         color: Colors.white, size: 20),
                   ),
