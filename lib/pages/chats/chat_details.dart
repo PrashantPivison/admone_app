@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:file_picker/file_picker.dart';
+// import 'package:file_picker/file_picker.dart';
 import 'package:my_app/app_state.dart';
 import 'package:my_app/backend/api_requests/chat_api.dart';
 import 'package:my_app/pages/chats/chat_details_model.dart';
@@ -43,11 +43,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     setState(() {});
   }
 
-  Future<void> _attachFile() async {
-    final res = await FilePicker.platform.pickFiles();
-    if (res == null) return;
-    setState(() => _pickedPaths = [res.files.single.path!]);
-  }
+  // Future<void> _attachFile() async {
+  //   final res = await FilePicker.platform.pickFiles();
+  //   if (res == null) return;
+  //   setState(() => _pickedPaths = [res.files.single.path!]);
+  // }
 
   Future<void> _sendMessage() async {
     final text = _msgCtrl.text.trim();
@@ -119,11 +119,22 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             for (var f in m.files) ...[
               const SizedBox(height: 8),
               Row(
+                // children: [
+                //   // const Icon(Icons.insert_drive_file, size: 20),
+                //   Image.asset('assets/images/pdf.png', width: 20, height: 20),
+                //   const SizedBox(width: 8),
+                //   Expanded(child: Text(f.fileName, style: chatsmessage)),
+                // ],
+
                 children: [
-                  const Icon(Icons.insert_drive_file, size: 20),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(f.fileName, style: chatsmessage)),
+                  Image.asset('images/pdf.png', width: 20, height: 20),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(f.fileName, style: chatsmessage),
+                  ),
                 ],
+
+
               )
             ],
             const SizedBox(height: 5),
@@ -194,6 +205,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                             color:
                             Theme.of(context).colorScheme.onSecondary,
                             fontWeight: FontWeight.w500,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       );
@@ -262,7 +274,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                        onTap: _attachFile,
+                        // onTap: _attachFile,
                         child: Container(
                           height: 30,
                           width: 80,

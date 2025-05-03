@@ -8,7 +8,7 @@ class CustomColors {
   static const Color textField = Color(0x33000000); // Black with 20% opacity
 
   // chats styling color
-  static const Color chatsgrey = Color(0xFFF2F2F2); // <-- fixed
+  static const Color chatsgrey = Color(0xFFEEEEEE); // <-- fixed
   static const Color chatsborder = Color(0xFFDDDDDD); // <-- fixed
   static const Color chatsgreen = Color(0xFFDFF6E5); // <-- fixed
 }

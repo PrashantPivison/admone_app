@@ -934,7 +934,7 @@ class _FilesScreenState extends State<FilesScreen> {
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          toolbarHeight: 130,
+          toolbarHeight: 140,
           backgroundColor: Colors.transparent,
           elevation: 0,
           flexibleSpace: Stack(children: [
@@ -980,21 +980,21 @@ class _FilesScreenState extends State<FilesScreen> {
                           .headlineMedium
                           ?.copyWith(color: Colors.white)),
                   const Spacer(),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.error,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(children: const [
-                      Icon(Icons.add_circle_outline,
-                          size: 14, color: Colors.white),
-                      SizedBox(width: 6),
-                      Text('New File',
-                          style: TextStyle(color: Colors.white, fontSize: 11)),
-                    ]),
-                  ),
+                  // Container(
+                  //   padding:
+                  //       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  //   decoration: BoxDecoration(
+                  //     color: Theme.of(context).colorScheme.error,
+                  //     borderRadius: BorderRadius.circular(8),
+                  //   ),
+                  //   child: Row(children: const [
+                  //     Icon(Icons.add_circle_outline,
+                  //         size: 14, color: Colors.white),
+                  //     SizedBox(width: 6),
+                  //     Text('New File',
+                  //         style: TextStyle(color: Colors.white, fontSize: 11)),
+                  //   ]),
+                  // ),
                 ]),
                 const SizedBox(height: 12),
                 TextField(

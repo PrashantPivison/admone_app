@@ -47,49 +47,49 @@ class _DashboardState extends State<HomePage> {
     }
   }
 
-  List<Widget> _buildActionButtons(BuildContext context) {
-    final buttons = [
-      {'icon': Icons.file_upload_outlined, 'label': 'Upload'},
-      {'icon': Icons.local_atm, 'label': 'Make Payment'},
-      {'icon': Icons.message_outlined, 'label': 'Message ADM'},
-    ];
-
-    return buttons.map((button) {
-      return Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(15),
-          onTap: () {
-            // Implement actions as needed
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.inversePrimary,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-              child: Row(
-                children: [
-                  Icon(button['icon'] as IconData,
-                      size: 20, color: Colors.white),
-                  const SizedBox(width: 8),
-                  Text(
-                    button['label'] as String,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontFamily: 'Inter',
-                          color: Theme.of(context).colorScheme.onSecondary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
+  // List<Widget> _buildActionButtons(BuildContext context) {
+  //   final buttons = [
+  //     {'icon': Icons.file_upload_outlined, 'label': 'Upload'},
+  //     {'icon': Icons.local_atm, 'label': 'Make Payment'},
+  //     {'icon': Icons.message_outlined, 'label': 'Message ADM'},
+  //   ];
+  //
+  //   return buttons.map((button) {
+  //     return Padding(
+  //       padding: const EdgeInsets.only(right: 10),
+  //       child: InkWell(
+  //         borderRadius: BorderRadius.circular(15),
+  //         onTap: () {
+  //           // Implement actions as needed
+  //         },
+  //         child: Container(
+  //           decoration: BoxDecoration(
+  //             color: Theme.of(context).colorScheme.inversePrimary,
+  //             borderRadius: BorderRadius.circular(15),
+  //           ),
+  //           child: Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+  //             child: Row(
+  //               children: [
+  //                 Icon(button['icon'] as IconData,
+  //                     size: 20, color: Colors.white),
+  //                 const SizedBox(width: 8),
+  //                 Text(
+  //                   button['label'] as String,
+  //                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
+  //                         fontFamily: 'Inter',
+  //                         color: Theme.of(context).colorScheme.onSecondary,
+  //                         fontWeight: FontWeight.w600,
+  //                       ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   }).toList();
+  // }
 
   Widget _buildSection(BuildContext context,
       {required String title, required List<Widget> items}) {
@@ -246,7 +246,7 @@ class _DashboardState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(children: _buildActionButtons(context)),
+              // child: Row(children: _buildActionButtons(context)),
             ),
           ),
           const SizedBox(height: 15),

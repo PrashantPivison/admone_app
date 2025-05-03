@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/backend/api_requests/chat_api.dart';
 import 'package:my_app/pages/chats/chat_details.dart';
 import 'package:my_app/pages/chats/chat_model.dart';
+import 'package:my_app/pages/documents/documents.dart';
 import '../../config/theme.dart';
 
 class Chats extends StatefulWidget {
@@ -108,7 +109,7 @@ class _ChatState extends State<Chats> {
     return SafeArea(child: Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        toolbarHeight: 130,
+        toolbarHeight: 140,
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Stack(
@@ -121,14 +122,19 @@ class _ChatState extends State<Chats> {
                 children: [
                   Row(
                     children: [
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: () => Navigator.pushAndRemoveUntil(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (_) => const FilesScreen()),
+                      //         (route) => false,
+                      //   ),
+                      //   child: const Icon(
+                      //     Icons.arrow_back,
+                      //     color: Colors.white,
+                      //     size: 20,
+                      //   ),
+                      // ),
                       const SizedBox(width: 10),
                       Text(
                         'Messages',

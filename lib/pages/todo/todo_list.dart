@@ -219,7 +219,7 @@ class _TodoListState extends State<TodoList> {
     return SafeArea(child: Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        toolbarHeight: 130,
+        toolbarHeight: 140,
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Stack(children: [
@@ -231,11 +231,11 @@ class _TodoListState extends State<TodoList> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Row(children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back,
-                        color: Colors.white, size: 20),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () => Navigator.pop(context),
+                  //   child: const Icon(Icons.arrow_back,
+                  //       color: Colors.white, size: 20),
+                  // ),
                   const SizedBox(width: 10),
                   Text('To Dos',
                       style: Theme.of(context)
