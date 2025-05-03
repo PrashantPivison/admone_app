@@ -135,8 +135,8 @@ class _DashboardState extends State<HomePage> {
     return _documents.map((doc) {
       final isPDF = doc['file_type']?.toLowerCase() == 'pdf';
       final icon = isPDF
-          ? Image.asset('images/pdf.png', width: 20, height: 20)
-          : Image.asset('images/jpg.png', width: 20, height: 20);
+          ? Image.asset('images/pdf.png', width: 25, height: 25)
+          : Image.asset('images/jpg.png', width: 25, height: 25);
 
       return Padding(
         padding: const EdgeInsets.only(bottom: 10),
@@ -190,12 +190,12 @@ class _DashboardState extends State<HomePage> {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (gicon != null)
               Icon(gicon, size: 25, color: giconColor ?? Colors.blue),
             if (gicon == null && icon != null) icon,
-            const SizedBox(width: 15),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,7 +255,7 @@ class _DashboardState extends State<HomePage> {
           //   title: 'Pending Payments',
           //   items: _buildPaymentItems(context),
           // ),
-          const SizedBox(height: 15),
+          // const SizedBox(height: 15),
           _buildSection(
             context,
             title: 'Recent Files',
@@ -277,7 +277,7 @@ class _DashboardState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        toolbarHeight: 250,
+        toolbarHeight: 200,
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Stack(

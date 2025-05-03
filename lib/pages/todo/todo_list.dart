@@ -59,12 +59,12 @@ class _TodoListState extends State<TodoList> {
             border: Border.all(width: 1.0, color: const Color(0xFFDDDDDD)),
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 14, 10, 14),
+            padding: const EdgeInsets.fromLTRB(15, 14, 10, 14),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(Icons.check_circle_outline, size: 25, color: Colors.green),
-                const SizedBox(width: 15),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,15 +105,20 @@ class _TodoListState extends State<TodoList> {
       return Padding(
         padding: const EdgeInsets.only(bottom: 10),
         child: Container(
+          // decoration: BoxDecoration(
+          //   color: const Color(0xFFFFE2E2),
+          //   borderRadius: BorderRadius.circular(10),
+          //   border: Border.all(width: 1.0, color: const Color(0xFFDDDDDD)),
+          // ),
           decoration: BoxDecoration(
             color: const Color(0xFFFFE2E2),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(width: 1.0, color: const Color(0xFFDDDDDD)),
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 14, 10, 14),
+            padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // replace icon with a checkbox
                 Checkbox(
@@ -153,7 +158,7 @@ class _TodoListState extends State<TodoList> {
                     }
                   },
                 ),
-                const SizedBox(width: 15),
+                const SizedBox(width: 5),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

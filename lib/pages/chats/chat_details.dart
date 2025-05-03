@@ -99,6 +99,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     }
   }
 
+
+
   Widget _buildMessage(ChatMessageDetail m) {
     final isMe =
         m.senderType == 'clientportal_user' && m.senderId == '$_myUserId';
@@ -155,7 +157,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       backgroundColor: Theme.of(context).colorScheme.onError,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        toolbarHeight: 100,
+        toolbarHeight: 80,
         elevation: 0,
         flexibleSpace: Stack(children: [
           Container(color: Theme.of(context).colorScheme.primary),
@@ -242,7 +244,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 15),
-
               height: 120,
               decoration: BoxDecoration(
                 border: Border.all(color: CustomColors.chatsborder, width: 1),
@@ -277,9 +278,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         // onTap: _attachFile,
                         child: Container(
                           height: 30,
-                          width: 80,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(8),
@@ -287,22 +286,19 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.attach_file,
-                                  size: 14, color: Colors.black),
+                              const Icon(Icons.attach_file, size: 14, color: Colors.black),
                               const SizedBox(width: 3),
-                              Text('Attach',
-                                  style: btntext.copyWith(color: Colors.black)),
+                              Text('Attach', style: btntext.copyWith(color: Colors.black)),
                             ],
                           ),
                         ),
                       ),
+                      const SizedBox(width: 12), // Spacing between buttons
                       GestureDetector(
                         onTap: _sending ? null : _sendMessage,
                         child: Container(
                           height: 30,
-                          width: 80,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(8),
@@ -314,8 +310,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                               height: 14,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
                             )
                                 : Row(
@@ -324,9 +319,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                 const Icon(Icons.arrow_forward,
                                     size: 14, color: Colors.white),
                                 const SizedBox(width: 6),
-                                Text('Send',
-                                    style: btntext.copyWith(
-                                        color: Colors.white)),
+                                Text('Send', style: btntext.copyWith(color: Colors.white)),
                               ],
                             ),
                           ),
@@ -334,6 +327,72 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       ),
                     ],
                   ),
+
+
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     GestureDetector(
+                  //       // onTap: _attachFile,
+                  //       child: Container(
+                  //         height: 30,
+                  //         width: 80,
+                  //         padding: const EdgeInsets.symmetric(
+                  //             horizontal: 12, vertical: 6),
+                  //         decoration: BoxDecoration(
+                  //           color: Colors.transparent,
+                  //           borderRadius: BorderRadius.circular(8),
+                  //           border: Border.all(color: Colors.black, width: 1),
+                  //         ),
+                  //         child: Row(
+                  //           children: [
+                  //             const Icon(Icons.attach_file,
+                  //                 size: 14, color: Colors.black),
+                  //             const SizedBox(width: 3),
+                  //             Text('Attach',
+                  //                 style: btntext.copyWith(color: Colors.black)),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     GestureDetector(
+                  //       onTap: _sending ? null : _sendMessage,
+                  //       child: Container(
+                  //         height: 30,
+                  //         width: 80,
+                  //         padding: const EdgeInsets.symmetric(
+                  //             horizontal: 12, vertical: 6),
+                  //         decoration: BoxDecoration(
+                  //           color: Theme.of(context).colorScheme.primary,
+                  //           borderRadius: BorderRadius.circular(8),
+                  //         ),
+                  //         child: Center(
+                  //           child: _sending
+                  //               ? const SizedBox(
+                  //             width: 14,
+                  //             height: 14,
+                  //             child: CircularProgressIndicator(
+                  //               strokeWidth: 2,
+                  //               valueColor: AlwaysStoppedAnimation<Color>(
+                  //                   Colors.white),
+                  //             ),
+                  //           )
+                  //               : Row(
+                  //             mainAxisAlignment: MainAxisAlignment.center,
+                  //             children: [
+                  //               const Icon(Icons.arrow_forward,
+                  //                   size: 14, color: Colors.white),
+                  //               const SizedBox(width: 6),
+                  //               Text('Send',
+                  //                   style: btntext.copyWith(
+                  //                       color: Colors.white)),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   if (_pickedPaths.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 6.0),

@@ -53,16 +53,16 @@ class _ChatState extends State<Chats> {
           border: Border.all(color: const Color(0xFFDDDDDD)),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 14, 10, 14),
+          padding: const EdgeInsets.fromLTRB(15, 14, 15, 14),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(
                 Icons.message_outlined,
                 size: 25,
                 color: t.unread ? Colors.green : Colors.grey,
               ),
-              const SizedBox(width: 15),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
