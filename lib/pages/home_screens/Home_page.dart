@@ -201,7 +201,7 @@ class _DashboardState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 200,
+                    width: 250,
                     child: Text(
                       title,
                       overflow: TextOverflow.ellipsis,
@@ -277,7 +277,7 @@ class _DashboardState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        toolbarHeight: 200,
+        toolbarHeight: 250,
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Stack(
