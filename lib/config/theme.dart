@@ -144,6 +144,41 @@ final ThemeData customTheme = ThemeData(
 // }
 
 
+// InputDecoration buildInputDecoration({
+//   required String labelText,
+//   required IconData prefixIcon,
+//   IconData? suffixIcon,
+//   VoidCallback? onSuffixTap,
+// }) {
+//   return InputDecoration(
+//     labelText: labelText,
+//     labelStyle: TextStyle(color: CustomColors.textField),
+//     filled: true,
+//     fillColor: Colors.white,
+//     prefixIcon: Icon(prefixIcon, color: CustomColors.textField, size: 20),
+//     suffixIcon: suffixIcon != null
+//         ? GestureDetector(
+//       onTap: onSuffixTap,
+//       child: Icon(suffixIcon, color: CustomColors.textField, size: 20),
+//     )
+//         : null,
+//     enabledBorder: OutlineInputBorder(
+//       borderRadius: BorderRadius.circular(10),
+//       borderSide: BorderSide(color: CustomColors.textField, width: 1.0),
+//       // borderSide: BorderSide(color: Colors.red, width: 1.0),
+//     ),
+//     focusedBorder: OutlineInputBorder(
+//       borderRadius: BorderRadius.circular(10),
+//       borderSide: BorderSide(
+//         color: CustomColors.textField.withOpacity(0.8),
+//         width: 2.0,
+//       ),
+//     ),
+//     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+//     contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+//   );
+// }
+
 InputDecoration buildInputDecoration({
   required String labelText,
   required IconData prefixIcon,
@@ -165,7 +200,6 @@ InputDecoration buildInputDecoration({
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
       borderSide: BorderSide(color: CustomColors.textField, width: 1.0),
-      // borderSide: BorderSide(color: Colors.red, width: 1.0),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
