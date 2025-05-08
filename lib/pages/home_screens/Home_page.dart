@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/backend/api_requests/notification_api.dart';
 import 'package:my_app/pages/company_data/companydata.dart';
+import 'package:my_app/pages/notification/notifications_page.dart';
 import 'package:provider/provider.dart';
 import 'package:my_app/app_state.dart';
 import 'package:my_app/backend/api_requests/dashboard_api.dart';
 import 'package:my_app/pages/auth_screens/login_page.dart'; // ⬅️ Add this import
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../config/theme.dart';
+import 'package:my_app/service/socket_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,13 +24,41 @@ class _DashboardState extends State<HomePage> {
   bool _loading = true;
   String? _error;
   int _entities = 0;
-
+  List<dynamic> _notifications = [];
+  int _unreadCount = 0;
   @override
   void initState() {
     super.initState();
     final appState = Provider.of<AppState>(context, listen: false);
     _user = appState.userData;
     _fetchDashboardData();
+    _fetchUnreadCount();
+    _initSocket();
+  }
+
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _fetchUnreadCount(); // 🔁 Refresh unread count when app resumes
+    }
+  }
+
+  void _initSocket() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getInt('user_id');
+    if (userId == null) return;
+
+    SocketService().connect(userId, (data) async {
+      print('📩 Live notification received: $data');
+      await _fetchUnreadCount(); // 🔁 Fetch actual updated count
+    });
+
+    // Optional: retry reconnect after delay if disconnected
+    Future.delayed(const Duration(seconds: 30), () {
+      if (!SocketService().isConnected()) {
+        print('🔁 Retrying socket connection...');
+        _initSocket();
+      }
+    });
   }
 
   Future<void> _fetchDashboardData() async {
@@ -90,6 +122,19 @@ class _DashboardState extends State<HomePage> {
   //     );
   //   }).toList();
   // }
+
+  Future<void> _fetchUnreadCount() async {
+    try {
+      final data = await NotificationApi.getNotifications(fetchAll: true);
+      final unread = data.where((n) => n['unread'] == null).toList();
+      setState(() {
+        _notifications = data;
+        _unreadCount = unread.length;
+      });
+    } catch (e) {
+      print("Error loading notifications: $e");
+    }
+  }
 
   Widget _buildSection(BuildContext context,
       {required String title, required List<Widget> items}) {
@@ -303,6 +348,41 @@ class _DashboardState extends State<HomePage> {
                         'images/admlogo.png',
                         width: 80,
                         height: 80,
+                      ),
+                      IconButton(
+                        icon: Stack(
+                          children: [
+                            const Icon(Icons.notifications,
+                                color: Colors.white),
+                            if (_unreadCount > 0)
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text(
+                                    '$_unreadCount',
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => NotificationsPage()),
+                          );
+                        },
                       ),
                       Expanded(
                         child: Align(

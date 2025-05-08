@@ -44,7 +44,6 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('auth_token');
 
-
   runApp(
     ChangeNotifierProvider(
       create: (_) => AppState()..initializeAuth(token),
@@ -287,7 +286,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
             boxShadow: const [
-            boxShadow: const [
               BoxShadow(
                 color: Colors.black12,
                 blurRadius: 8,
@@ -301,20 +299,13 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               backgroundColor: Colors.white,
               currentIndex: _currentIndex,
               onTap: (index) => setState(() => _currentIndex = index),
-              onTap: (index) => setState(() => _currentIndex = index),
               type: BottomNavigationBarType.fixed,
               items: const [
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home_outlined),
                   label: 'Home',
                 ),
-                  icon: Icon(Icons.home_outlined),
-                  label: 'Home',
-                ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.folder_copy_outlined),
-                  label: 'Files',
-                ),
                   icon: Icon(Icons.folder_copy_outlined),
                   label: 'Files',
                 ),
@@ -322,13 +313,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                   icon: Icon(Icons.message_outlined),
                   label: 'Message',
                 ),
-                  icon: Icon(Icons.message_outlined),
-                  label: 'Message',
-                ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.playlist_add_sharp),
-                  label: 'To-do',
-                ),
                   icon: Icon(Icons.playlist_add_sharp),
                   label: 'To-do',
                 ),

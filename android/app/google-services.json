@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "230675310937",
+    "project_id": "admoneapp",
+    "storage_bucket": "admoneapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230675310937:android:2e6a36e80fc105a37c0448",
+        "android_client_info": {
+          "package_name": "com.example.my_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWP1iqsSSEQORLyLnIiYkd74FmJSY4z2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

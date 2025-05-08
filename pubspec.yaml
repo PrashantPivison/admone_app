@@ -69,6 +69,10 @@ dependencies:
   url_launcher: ^6.1.7
   file_picker: ^6.1.1
   local_auth: 2.1.6
+  firebase_core: ^2.25.3
+  firebase_messaging: ^14.7.5
+  flutter_local_notifications: ^17.1.2
+  socket_io_client: ^2.0.3+1
   path_provider: ^2.0.15
   flutter_pdfview: ^1.2.3
   flutter_plugin_android_lifecycle: ^2.0.9
