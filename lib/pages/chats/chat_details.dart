@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:file_picker/file_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:my_app/app_state.dart';
 import 'package:my_app/backend/api_requests/chat_api.dart';
 import 'package:my_app/pages/chats/chat_details_model.dart';
@@ -43,11 +43,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     setState(() {});
   }
 
-  // Future<void> _attachFile() async {
-  //   final res = await FilePicker.platform.pickFiles();
-  //   if (res == null) return;
-  //   setState(() => _pickedPaths = [res.files.single.path!]);
-  // }
+  Future<void> _attachFile() async {
+    final res = await FilePicker.platform.pickFiles();
+    if (res == null) return;
+    setState(() => _pickedPaths = [res.files.single.path!]);
+  }
 
   Future<void> _sendMessage() async {
     final text = _msgCtrl.text.trim();
@@ -100,7 +100,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   Widget _buildMessage(ChatMessageDetail m) {
-    final isMe = m.senderType == 'clientportal_user' && m.senderId == '$_myUserId';
+    final isMe =
+        m.senderType == 'clientportal_user' && m.senderId == '$_myUserId';
     final clean = m.body.replaceAll(RegExp(r'<[^>]*>'), '');
 
     return Align(
@@ -132,9 +133,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             Text(
               m.messageTimeDate,
               style: chatsmessage.copyWith(
-                  color: const Color(0xFFB8CBBD),
-                  fontSize: 11
-              ),
+                  color: const Color(0xFFB8CBBD), fontSize: 11),
             ),
           ],
         ),
@@ -155,7 +154,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             children: [
               Container(color: Theme.of(context).colorScheme.primary),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,11 +164,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       children: [
                         GestureDetector(
                           onTap: () => Navigator.pop(context),
-                          child: const Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
-                              size: 20
-                          ),
+                          child: const Icon(Icons.arrow_back,
+                              color: Colors.white, size: 20),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -179,10 +176,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                 .textTheme
                                 .headlineSmall
                                 ?.copyWith(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                              color: Theme.of(context).colorScheme.onSecondary,
-                            ),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      Theme.of(context).colorScheme.onSecondary,
+                                ),
                           ),
                         ),
                       ],
@@ -201,11 +199,13 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                   .textTheme
                                   .labelSmall
                                   ?.copyWith(
-                                fontFamily: 'Poppins',
-                                color: Theme.of(context).colorScheme.onSecondary,
-                                fontWeight: FontWeight.w500,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                                    fontFamily: 'Poppins',
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondary,
+                                    fontWeight: FontWeight.w500,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                             ),
                           );
                         }
@@ -230,7 +230,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (s.hasError) {
-                      return const Center(child: Text('Failed to load messages'));
+                      return const Center(
+                          child: Text('Failed to load messages'));
                     }
                     return ListView.builder(
                       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -273,7 +274,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          // onTap: _attachFile,
+                          onTap: _attachFile,
                           child: Container(
                             height: 30,
                             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -286,16 +287,12 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                const Icon(
-                                    Icons.attach_file,
-                                    size: 16,
-                                    color: Colors.black
-                                ),
+                                const Icon(Icons.attach_file,
+                                    size: 16, color: Colors.black),
                                 const SizedBox(width: 4),
-                                Text(
-                                    'Attach',
-                                    style: btntext.copyWith(color: Colors.black)
-                                ),
+                                Text('Attach',
+                                    style:
+                                        btntext.copyWith(color: Colors.black)),
                               ],
                             ),
                           ),
@@ -313,29 +310,28 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                             child: Center(
                               child: _sending
                                   ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                ),
-                              )
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    )
                                   : Row(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                      Icons.arrow_forward,
-                                      size: 16,
-                                      color: Colors.white
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                      'Send',
-                                      style: btntext.copyWith(color: Colors.white)
-                                  ),
-                                ],
-                              ),
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Icon(Icons.arrow_forward,
+                                            size: 16, color: Colors.white),
+                                        const SizedBox(width: 4),
+                                        Text('Send',
+                                            style: btntext.copyWith(
+                                                color: Colors.white)),
+                                      ],
+                                    ),
                             ),
                           ),
                         ),
@@ -349,9 +345,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                           child: Text(
                             'Selected: ${_pickedPaths.first.split('/').last}',
                             style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey
-                            ),
+                                fontSize: 12, color: Colors.grey),
                           ),
                         ),
                       ),
