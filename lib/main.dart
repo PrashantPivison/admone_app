@@ -192,6 +192,8 @@ import 'pages/company_data/companydata.dart';
 import 'pages/chats/chats.dart';
 import 'config/theme.dart';
 import 'pages/home_screens/home_page.dart';
+import 'pages/intro.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -210,6 +212,122 @@ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 }
+
+class IntroPage extends StatefulWidget {
+  const IntroPage({super.key});
+
+  @override
+  State<IntroPage> createState() => _IntroPageState();
+}
+
+class _IntroPageState extends State<IntroPage> {
+  double _opacity = 1.0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Start fade-out after 2 seconds
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _opacity = 0.0;
+      });
+    });
+
+    // Navigate after fade-out animation completes (2s delay + 600ms animation)
+    Future.delayed(const Duration(milliseconds: 2400), () {
+      final isLoggedIn =
+          Provider.of<AppState>(context, listen: false).isLoggedIn;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+          isLoggedIn ? const BottomNavScreen() : const LoginPage(),
+        ),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 800),
+      opacity: _opacity,
+      child: Scaffold(
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Background image
+            Image.asset(
+              'assets/images/Splash.png',
+              fit: BoxFit.cover,
+            ),
+            // Bottom loader
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 150),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// class IntroPage extends StatefulWidget {
+//   const IntroPage({super.key});
+//
+//   @override
+//   State<IntroPage> createState() => _IntroPageState();
+// }
+//
+// class _IntroPageState extends State<IntroPage> {
+//   @override
+//   void initState() {
+//     super.initState();
+//     Future.delayed(const Duration(seconds: 2), () {
+//       final isLoggedIn = Provider.of<AppState>(context, listen: false).isLoggedIn;
+//       Navigator.pushReplacement(
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => isLoggedIn ? const BottomNavScreen() : const LoginPage(),
+//         ),
+//       );
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Stack(
+//         fit: StackFit.expand,
+//         children: [
+//           Image.asset(
+//             'assets/images/Splash.png',
+//             fit: BoxFit.cover,
+//           ),
+//           Align(
+//             alignment: Alignment.bottomCenter,
+//             child: Padding(
+//               padding: const EdgeInsets.only(bottom: 60.0),
+//               child: CircularProgressIndicator(
+//                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final LocalAuthentication _localAuth = LocalAuthentication();
@@ -266,20 +384,29 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: customTheme,
-      home: Consumer<AppState>(
-        builder: (ctx, appState, _) {
-          if (!appState.isLoggedIn) {
-            return const LoginPage();
-          }
-          // Logged in → always go straight to the main nav;
-          // auth hack happens on lifecycle resume above.
-          return const BottomNavScreen();
-        },
-      ),
+      home: IntroPage(),
     );
+
+
+    // return MaterialApp(
+    //   debugShowCheckedModeBanner: false,
+    //   theme: customTheme,
+    //   // home: Consumer<AppState>(
+    //   //   builder: (ctx, appState, _) {
+    //   //     if (!appState.isLoggedIn) {
+    //   //       return const LoginPage();
+    //   //     }
+    //   //     // Logged in → always go straight to the main nav;
+    //   //     // auth hack happens on lifecycle resume above.
+    //   //     return const BottomNavScreen();
+    //   //   },
+    //   // ),
+    //   home: IntroPage(),
+    // );
   }
 }
 

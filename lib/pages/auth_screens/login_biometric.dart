@@ -159,23 +159,31 @@ class LoginBiometric extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () => _handleBiometricOrAuthenticate(context),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-        ),
+        style: Theme.of(context).primaryButtonStyle,
         child: Text(
-          'Turn on Biometric Login',
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 14,
-            color: Theme.of(context).colorScheme.surface,
-            fontWeight: FontWeight.w600,
-          ),
+          "Turn on Biometric Login",
+          style: Theme.of(context).primaryButtonTextStyle,
         ),
       ),
+      // child: ElevatedButton(
+      //   onPressed: () => _handleBiometricOrAuthenticate(context),
+      //   style: ElevatedButton.styleFrom(
+      //     backgroundColor: Theme.of(context).colorScheme.primary,
+      //     shape: RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(8),
+      //     ),
+      //     padding: const EdgeInsets.symmetric(vertical: 10),
+      //   ),
+      //   child: Text(
+      //     'Turn on Biometric Login',
+      //     style: TextStyle(
+      //       fontFamily: 'Poppins',
+      //       fontSize: 14,
+      //       color: Theme.of(context).colorScheme.surface,
+      //       fontWeight: FontWeight.w600,
+      //     ),
+      //   ),
+      // ),
     );
   }
 
