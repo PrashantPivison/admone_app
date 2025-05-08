@@ -110,13 +110,13 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isMe ? CustomColors.chatsgreen : CustomColors.chatsgrey,
+          color: isMe ? CustomColors.chatsGreen : CustomColors.chatsGrey,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (clean.isNotEmpty) Text(clean, style: chatsmessage),
+            if (clean.isNotEmpty) Text(clean, style: chatsMessage),
             for (var f in m.files) ...[
               const SizedBox(height: 8),
               Row(
@@ -124,7 +124,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   Image.asset('images/pdf.png', width: 20, height: 20),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(f.fileName, style: chatsmessage),
+                    child: Text(f.fileName, style: chatsMessage),
                   ),
                 ],
               )
@@ -132,7 +132,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             const SizedBox(height: 5),
             Text(
               m.messageTimeDate,
-              style: chatsmessage.copyWith(
+              style: chatsMessage.copyWith(
                   color: const Color(0xFFB8CBBD), fontSize: 11),
             ),
           ],
@@ -245,9 +245,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 height: 120,
                 decoration: BoxDecoration(
-                  border: Border.all(color: CustomColors.chatsborder, width: 1),
+                  border: Border.all(color: CustomColors.chatsBorder, width: 1),
                   borderRadius: BorderRadius.circular(12),
-                  color: CustomColors.chatsgrey,
+                  color: CustomColors.chatsGrey,
                 ),
                 child: Column(
                   children: [
@@ -292,7 +292,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                 const SizedBox(width: 4),
                                 Text('Attach',
                                     style:
-                                        btntext.copyWith(color: Colors.black)),
+                                        btnText.copyWith(color: Colors.black)),
                               ],
                             ),
                           ),
@@ -328,7 +328,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                             size: 16, color: Colors.white),
                                         const SizedBox(width: 4),
                                         Text('Send',
-                                            style: btntext.copyWith(
+                                            style: btnText.copyWith(
                                                 color: Colors.white)),
                                       ],
                                     ),

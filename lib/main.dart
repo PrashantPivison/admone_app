@@ -44,6 +44,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('auth_token');
 
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => AppState()..initializeAuth(token),
@@ -54,6 +55,7 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -168,7 +170,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   Future<void> _authenticate() async {
     try {
-      final did = await _localAuth.authenticate(
+      final didAuthenticate = await _localAuth.authenticate(
         localizedReason: 'Please authenticate to continue',
         options: const AuthenticationOptions(
           biometricOnly: false,
@@ -176,7 +178,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           useErrorDialogs: true,
         ),
       );
-      if (!did) SystemNavigator.pop();
+      if (!didAuthenticate) SystemNavigator.pop();
     } on PlatformException {
       // fallback allowed
     }
@@ -258,6 +260,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({Key? key}) : super(key: key);
+
   @override
   State<BottomNavScreen> createState() => _BottomNavScreenState();
 }
@@ -284,6 +287,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
             boxShadow: const [
+            boxShadow: const [
               BoxShadow(
                 color: Colors.black12,
                 blurRadius: 8,
@@ -297,9 +301,13 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               backgroundColor: Colors.white,
               currentIndex: _currentIndex,
               onTap: (index) => setState(() => _currentIndex = index),
+              onTap: (index) => setState(() => _currentIndex = index),
               type: BottomNavigationBarType.fixed,
               items: const [
                 BottomNavigationBarItem(
+                  icon: Icon(Icons.home_outlined),
+                  label: 'Home',
+                ),
                   icon: Icon(Icons.home_outlined),
                   label: 'Home',
                 ),
@@ -307,11 +315,20 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                   icon: Icon(Icons.folder_copy_outlined),
                   label: 'Files',
                 ),
+                  icon: Icon(Icons.folder_copy_outlined),
+                  label: 'Files',
+                ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.message_outlined),
                   label: 'Message',
                 ),
+                  icon: Icon(Icons.message_outlined),
+                  label: 'Message',
+                ),
                 BottomNavigationBarItem(
+                  icon: Icon(Icons.playlist_add_sharp),
+                  label: 'To-do',
+                ),
                   icon: Icon(Icons.playlist_add_sharp),
                   label: 'To-do',
                 ),

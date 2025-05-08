@@ -95,27 +95,40 @@ class LoginFaceid extends StatelessWidget {
       height: 45,
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            createRightToLeftRoute(HomePage()),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-        ),
+         onPressed: () {
+            Navigator.push(
+              context,
+              createRightToLeftRoute(HomePage()),
+            );
+          },
+        style: Theme.of(context).primaryButtonStyle,
         child: Text(
           "Turn on Face ID",
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 14,
-            color: Theme.of(context).colorScheme.surface,
-            fontWeight: FontWeight.w600,
-          ),
+          style: Theme.of(context).primaryButtonTextStyle,
         ),
       ),
+      // child: ElevatedButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //       context,
+      //       createRightToLeftRoute(HomePage()),
+      //     );
+      //   },
+      //   style: ElevatedButton.styleFrom(
+      //     backgroundColor: Theme.of(context).colorScheme.primary,
+      //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      //     padding: const EdgeInsets.symmetric(vertical: 10),
+      //   ),
+      //   child: Text(
+      //     "Turn on Face ID",
+      //     style: TextStyle(
+      //       fontFamily: 'Poppins',
+      //       fontSize: 14,
+      //       color: Theme.of(context).colorScheme.surface,
+      //       fontWeight: FontWeight.w600,
+      //     ),
+      //   ),
+      // ),
     );
   }
 
