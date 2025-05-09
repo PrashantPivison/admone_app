@@ -52,6 +52,20 @@ void main() async {
   );
 }
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('auth_token');
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => AppState()..initializeAuth(token),
+      child: const MyApp(),
+    ),
+  );
+}
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -100,6 +114,28 @@ class _IntroPageState extends State<IntroPage> {
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 800),
       opacity: _opacity,
+      child: Scaffold(
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Background image
+            Image.asset(
+              'assets/images/Splash.png',
+              fit: BoxFit.cover,
+            ),
+            // Bottom loader
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 150),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       child: Scaffold(
         body: Stack(
           fit: StackFit.expand,
@@ -185,10 +221,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   Future<void> _setupFCM() async {
     try {
-      final messaging = FirebaseMessaging.instance;
-      await messaging.requestPermission();
+      // final messaging = FirebaseMessaging.instance;
+      // await messaging.requestPermission();
 
-      final fcmToken = await messaging.getToken();
+      // final fcmToken = await messaging.getToken();
       final prefs = await SharedPreferences.getInstance();
       final userId = prefs.getInt('user_id');
 
@@ -244,6 +280,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: customTheme,
+      home: IntroPage(),
+    );
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: customTheme,
