@@ -275,49 +275,62 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     CompanyDataPage(),
   ];
 
+  Future<bool> _onWillPop() async {
+    if (_currentIndex != 0) {
+      setState(() {
+        _currentIndex = 0;
+      });
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_currentIndex],
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(15, 0, 15, 20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 8,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: BottomNavigationBar(
-              backgroundColor: Colors.white,
-              currentIndex: _currentIndex,
-              onTap: (index) => setState(() => _currentIndex = index),
-              type: BottomNavigationBarType.fixed,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home_outlined),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.folder_copy_outlined),
-                  label: 'Files',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.message_outlined),
-                  label: 'Message',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.playlist_add_sharp),
-                  label: 'To-do',
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: _pages[_currentIndex],
+        bottomNavigationBar: SafeArea(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(15, 0, 15, 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
                 ),
               ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: BottomNavigationBar(
+                backgroundColor: Colors.white,
+                currentIndex: _currentIndex,
+                onTap: (index) => setState(() => _currentIndex = index),
+                type: BottomNavigationBarType.fixed,
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.folder_copy_outlined),
+                    label: 'Files',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.message_outlined),
+                    label: 'Message',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.playlist_add_sharp),
+                    label: 'To-do',
+                  ),
+                ],
+              ),
             ),
           ),
         ),
