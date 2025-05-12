@@ -189,24 +189,47 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       fontWeight: FontWeight.w600,
                       overflow: TextOverflow.ellipsis
                     )),
-                subtitle: Text(n['message'] ?? '',
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelSmall
-                        ?.copyWith(
-                      fontFamily: 'Inter',
-                      color: Colors.grey,
-                    )),
-                trailing: Text(
-                  n['timeAgo'] ?? '',
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelSmall
-                      ?.copyWith(
-                    fontFamily: 'Inter',
-                    color: Colors.grey,
-                  ),
+                subtitle: Row(
+                  children: [
+                    SizedBox(
+                      width: 150,
+                      child: Text(
+                        n['message'] ?? '',
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          fontFamily: 'Inter',
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      '|',  // This is the vertical pipe character
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        fontFamily: 'Inter',
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      n['timeAgo'] ?? '',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        fontFamily: 'Inter',
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
+                // trailing: Text(
+                //   n['timeAgo'] ?? '',
+                //   style: Theme.of(context)
+                //       .textTheme
+                //       .labelSmall
+                //       ?.copyWith(
+                //     fontFamily: 'Inter',
+                //     color: Colors.grey,
+                //   ),
+                // ),
               ),
             ),
           );
