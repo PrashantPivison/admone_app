@@ -105,39 +105,34 @@ class _NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        automaticallyImplyLeading: false,
-        toolbarHeight: 80,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    const SizedBox(width: 10),
-                    Text('Notifications',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              fontFamily: 'Poppins',
-                              color: Theme.of(context).colorScheme.onSecondary,
-                            )),
-                  ],
-                ),
-              ],
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80),
+        child: AppBar(
+          elevation: 0,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          automaticallyImplyLeading: false,
+          flexibleSpace: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back,
+                        color: Colors.white, size: 24),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Notifications',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Poppins',
+                        ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -151,7 +146,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   itemCount: _notifications.length,
                   itemBuilder: (ctx, i) {
                     final n = _notifications[i];
-                    final isUnread = n['unread'] ?? false;
+                    final isUnread = n['unread'] != false;
                     final combinedTitle =
                         '${n['title'] ?? ''} – ‘${_stripHtml(n['message'] ?? '')}’';
                     final message = n['message'] ?? "";
@@ -188,7 +183,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                 .labelMedium
                                 ?.copyWith(
                                   fontFamily: 'Inter',
-                                  color: const Color(0xFF4179C5),
+                                  color: isUnread
+                                      ? const Color(0xFF4179C5)
+                                      : Colors.black,
                                   fontWeight: FontWeight.w600,
                                 ),
                           ),
