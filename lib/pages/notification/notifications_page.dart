@@ -65,7 +65,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:my_app/backend/api_requests/notification_api.dart';
 import '../../config/theme.dart';
@@ -127,20 +126,15 @@ class _NotificationsPageState extends State<NotificationsPage> {
               children: [
                 Row(
                   children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.arrow_back,
-                          color: Colors.white, size: 20),
-                    ),
                     const SizedBox(width: 10),
                     Text('Notifications',
                         style: Theme.of(context)
                             .textTheme
                             .headlineMedium
                             ?.copyWith(
-                          fontFamily: 'Poppins',
-                          color: Theme.of(context).colorScheme.onSecondary,
-                        )),
+                              fontFamily: 'Poppins',
+                              color: Theme.of(context).colorScheme.onSecondary,
+                            )),
                   ],
                 ),
               ],
@@ -151,90 +145,103 @@ class _NotificationsPageState extends State<NotificationsPage> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-          ? Center(child: Text("Error: $_error"))
-          : ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        itemCount: _notifications.length,
-        itemBuilder: (ctx, i) {
-          final n = _notifications[i];
-          return Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 15, vertical: 5),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                    width: 1.0, color: const Color(0xFFDDDDDD)),
-              ),
-              child: ListTile(
-                horizontalTitleGap: 1,
-                contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                leading: Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Icon(
-                    Icons.circle,
-                    size: 10
-                    ,
-                    color: Color(0xFF4179C5), // 0xFF for full opacity + hex color
-                  ),
-                ),
-                title: Text(n['title'] ?? '',
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelMedium
-                        ?.copyWith(
-                      fontFamily: 'Inter',
-                        color: Color(0xFF4179C5),
-                      fontWeight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis
-                    )),
-                subtitle: Row(
-                  children: [
-                    SizedBox(
-                      width: 150,
-                      child: Text(
-                        n['message'] ?? '',
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          fontFamily: 'Inter',
-                          color: Colors.grey,
+              ? Center(child: Text("Error: $_error"))
+              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  itemCount: _notifications.length,
+                  itemBuilder: (ctx, i) {
+                    final n = _notifications[i];
+                    final isUnread = n['unread'] ?? false;
+                    final combinedTitle =
+                        '${n['title'] ?? ''} – ‘${_stripHtml(n['message'] ?? '')}’';
+                    final message = n['message'] ?? "";
+                    final senderName = n['senderName'] ?? '';
+                    final timeAgo = n['timeAgo'] ?? '';
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 5),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                              width: 1.0, color: const Color(0xFFDDDDDD)),
+                        ),
+                        child: ListTile(
+                          horizontalTitleGap: 1,
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                          leading: isUnread
+                              ? const Padding(
+                                  padding: EdgeInsets.only(bottom: 10),
+                                  child: Icon(Icons.circle,
+                                      size: 10, color: Color(0xFF4179C5)),
+                                )
+                              : const SizedBox(width: 16),
+                          title: Text(
+                            combinedTitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(
+                                  fontFamily: 'Inter',
+                                  color: const Color(0xFF4179C5),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                          subtitle: Row(
+                            children: [
+                              SizedBox(
+                                width: 150,
+                                child: Text(
+                                  'From $senderName',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelSmall
+                                      ?.copyWith(
+                                        fontFamily: 'Inter',
+                                        color: Colors.grey,
+                                      ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text('|',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelSmall
+                                      ?.copyWith(
+                                        fontFamily: 'Inter',
+                                        color: Colors.grey,
+                                      )),
+                              const SizedBox(width: 10),
+                              Text(
+                                timeAgo,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                      fontFamily: 'Inter',
+                                      color: Colors.grey,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      '|',  // This is the vertical pipe character
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        fontFamily: 'Inter',
-                        color: Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      n['timeAgo'] ?? '',
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        fontFamily: 'Inter',
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
-                // trailing: Text(
-                //   n['timeAgo'] ?? '',
-                //   style: Theme.of(context)
-                //       .textTheme
-                //       .labelSmall
-                //       ?.copyWith(
-                //     fontFamily: 'Inter',
-                //     color: Colors.grey,
-                //   ),
-                // ),
-              ),
-            ),
-          );
-        },
-      ),
     );
+  }
+
+  String _stripHtml(String htmlText) {
+    return htmlText
+        .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
+        .replaceAll('\n', ' ')
+        .trim();
   }
 }
