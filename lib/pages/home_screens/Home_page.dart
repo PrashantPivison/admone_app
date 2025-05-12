@@ -5,7 +5,7 @@ import 'package:my_app/pages/notification/notifications_page.dart';
 import 'package:provider/provider.dart';
 import 'package:my_app/app_state.dart';
 import 'package:my_app/backend/api_requests/dashboard_api.dart';
-import 'package:my_app/pages/auth_screens/login_page.dart'; // ⬅️ Add this import
+import 'package:my_app/pages/auth_screens/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../config/theme.dart';
 import 'package:my_app/service/socket_service.dart';
@@ -26,6 +26,7 @@ class _DashboardState extends State<HomePage> {
   int _entities = 0;
   List<dynamic> _notifications = [];
   int _unreadCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +39,7 @@ class _DashboardState extends State<HomePage> {
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _fetchUnreadCount(); // 🔁 Refresh unread count when app resumes
+      _fetchUnreadCount();
     }
   }
 
@@ -49,10 +50,9 @@ class _DashboardState extends State<HomePage> {
 
     SocketService().connect(userId, (data) async {
       print('📩 Live notification received: $data');
-      await _fetchUnreadCount(); // 🔁 Fetch actual updated count
+      await _fetchUnreadCount();
     });
 
-    // Optional: retry reconnect after delay if disconnected
     Future.delayed(const Duration(seconds: 30), () {
       if (!SocketService().isConnected()) {
         print('🔁 Retrying socket connection...');
@@ -79,50 +79,6 @@ class _DashboardState extends State<HomePage> {
     }
   }
 
-  // List<Widget> _buildActionButtons(BuildContext context) {
-  //   final buttons = [
-  //     {'icon': Icons.file_upload_outlined, 'label': 'Upload'},
-  //     {'icon': Icons.local_atm, 'label': 'Make Payment'},
-  //     {'icon': Icons.message_outlined, 'label': 'Message ADM'},
-  //   ];
-  //
-  //   return buttons.map((button) {
-  //     return Padding(
-  //       padding: const EdgeInsets.only(right: 10),
-  //       child: InkWell(
-  //         borderRadius: BorderRadius.circular(15),
-  //         onTap: () {
-  //           // Implement actions as needed
-  //         },
-  //         child: Container(
-  //           decoration: BoxDecoration(
-  //             color: Theme.of(context).colorScheme.inversePrimary,
-  //             borderRadius: BorderRadius.circular(15),
-  //           ),
-  //           child: Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-  //             child: Row(
-  //               children: [
-  //                 Icon(button['icon'] as IconData,
-  //                     size: 20, color: Colors.white),
-  //                 const SizedBox(width: 8),
-  //                 Text(
-  //                   button['label'] as String,
-  //                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-  //                         fontFamily: 'Inter',
-  //                         color: Theme.of(context).colorScheme.onSecondary,
-  //                         fontWeight: FontWeight.w600,
-  //                       ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //   }).toList();
-  // }
-
   Future<void> _fetchUnreadCount() async {
     try {
       final data = await NotificationApi.getNotifications(fetchAll: true);
@@ -146,10 +102,10 @@ class _DashboardState extends State<HomePage> {
           Text(
             title,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontFamily: 'Inter',
-                  color: CustomColors.text,
-                  fontWeight: FontWeight.w600,
-                ),
+              fontFamily: 'Inter',
+              color: CustomColors.text,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: 10),
           ...items,
@@ -157,20 +113,6 @@ class _DashboardState extends State<HomePage> {
       ),
     );
   }
-
-  // List<Widget> _buildPaymentItems(BuildContext context) {
-  //   return [
-  //     _buildListItem(
-  //       context,
-  //       gicon: Icons.receipt_long_outlined,
-  //       icon: null,
-  //       title: 'Invoice #7897AA112399...',
-  //       subtitle: 'Unpaid',
-  //       amount: '12,122',
-  //     ),
-  //     const SizedBox(height: 10),
-  //   ];
-  // }
 
   List<Widget> _buildDocumentItems(BuildContext context) {
     if (_loading) return [const Center(child: CircularProgressIndicator())];
@@ -189,7 +131,6 @@ class _DashboardState extends State<HomePage> {
           context,
           icon: icon,
           title: doc['file_name'] ?? '',
-          // subtitle: doc['uploaded_on'] ?? '',
           subtitle: 'Uploaded ${(doc['uploaded_on'])}',
           gicon: null,
         ),
@@ -210,8 +151,7 @@ class _DashboardState extends State<HomePage> {
           icon: null,
           gicon: Icons.message_outlined,
           title: msg['lastMessage'] ?? '',
-          subtitle:
-              'From ${msg['lastMessageSender']} | ${msg['lastMessageTime'] ?? ''}',
+          subtitle: 'From ${msg['lastMessageSender']} | ${msg['lastMessageTime'] ?? ''}',
           giconColor: Colors.green,
         ),
       );
@@ -219,14 +159,14 @@ class _DashboardState extends State<HomePage> {
   }
 
   Widget _buildListItem(
-    BuildContext context, {
-    required Widget? icon,
-    required String title,
-    required String subtitle,
-    required IconData? gicon,
-    String? amount,
-    Color? giconColor,
-  }) {
+      BuildContext context, {
+        required Widget? icon,
+        required String title,
+        required String subtitle,
+        required IconData? gicon,
+        String? amount,
+        Color? giconColor,
+      }) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -252,19 +192,19 @@ class _DashboardState extends State<HomePage> {
                       title,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                            fontFamily: 'Inter',
-                            color: CustomColors.text,
-                            fontWeight: FontWeight.w600,
-                          ),
+                        fontFamily: 'Inter',
+                        color: CustomColors.text,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          fontFamily: 'Inter',
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      fontFamily: 'Inter',
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
@@ -273,10 +213,10 @@ class _DashboardState extends State<HomePage> {
               Text(
                 amount,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      fontFamily: 'Inter',
-                      color: CustomColors.text,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  fontFamily: 'Inter',
+                  color: CustomColors.text,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
           ],
         ),
@@ -292,15 +232,8 @@ class _DashboardState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              // child: Row(children: _buildActionButtons(context)),
             ),
           ),
-          const SizedBox(height: 15),
-          // _buildSection(
-          //   context,
-          //   title: 'Pending Payments',
-          //   items: _buildPaymentItems(context),
-          // ),
           // const SizedBox(height: 15),
           _buildSection(
             context,
@@ -342,74 +275,51 @@ class _DashboardState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(child: Container()),
+                      // Empty container to balance the row
+                      Container(width: 48), // Same width as the notification icon
+
+                      // Centered logo
                       Image.asset(
                         'images/admlogo.png',
                         width: 80,
                         height: 80,
                       ),
-                      IconButton(
-                        icon: Stack(
-                          children: [
-                            const Icon(Icons.notifications,
-                                color: Colors.white),
-                            if (_unreadCount > 0)
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.all(3),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.red,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Text(
-                                    '$_unreadCount',
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+
+                      // Notification icon with badge
+                      Stack(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.notifications, color: Colors.white),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => NotificationsPage()),
+                              );
+                            },
+                          ),
+                          if (_unreadCount > 0)
+                            Positioned(
+                              right: 8,
+                              top: 8,
+                              child: Container(
+                                padding: const EdgeInsets.all(3),
+                                decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  '$_unreadCount',
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                          ],
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => NotificationsPage()),
-                          );
-                        },
-                      ),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: PopupMenuButton<String>(
-                            onSelected: (value) async {
-                              if (value == 'logout') {
-                                final appState = Provider.of<AppState>(context,
-                                    listen: false);
-                                await appState.logout();
-                                Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (_) => const LoginPage()),
-                                  (route) => false,
-                                );
-                              }
-                            },
-                            icon: const Icon(Icons.settings_outlined,
-                                size: 20, color: Colors.white),
-                            itemBuilder: (BuildContext context) => [
-                              const PopupMenuItem<String>(
-                                value: 'logout',
-                                child: Text('Logout'),
-                              ),
-                            ],
-                          ),
-                        ),
+                            ),
+                        ],
                       ),
                     ],
                   ),
@@ -417,18 +327,18 @@ class _DashboardState extends State<HomePage> {
                   Text(
                     _user?['user']?['name'] ?? '',
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          fontFamily: 'Poppins',
-                          color: Theme.of(context).colorScheme.onSecondary,
-                        ),
+                      fontFamily: 'Poppins',
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     _user?['user']?['email'] ?? '',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontFamily: 'Poppins',
-                          color: Theme.of(context).colorScheme.onSecondary,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      fontFamily: 'Poppins',
+                      color: Theme.of(context).colorScheme.onSecondary,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   const SizedBox(height: 30),
                   Container(
@@ -437,7 +347,7 @@ class _DashboardState extends State<HomePage> {
                       color: Theme.of(context).colorScheme.onSecondary,
                     ),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(
