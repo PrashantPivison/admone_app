@@ -28,6 +28,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   late int _myUserId;
   bool _sending = false;
   List<String> _pickedPaths = [];
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -35,6 +36,18 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     final appState = Provider.of<AppState>(context, listen: false);
     _myUserId = appState.userData?['user']?['id'] as int? ?? -1;
     _loadDetails();
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      Future.delayed(Duration(milliseconds: 100), () {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   void _loadDetails() {
@@ -90,6 +103,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       _msgCtrl.clear();
       setState(() => _pickedPaths.clear());
       _loadDetails();
+      _scrollToBottom();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Send failed: $e')),
@@ -233,7 +247,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       return const Center(
                           child: Text('Failed to load messages'));
                     }
+                    WidgetsBinding.instance
+                        .addPostFrameCallback((_) => _scrollToBottom());
+
                     return ListView.builder(
+                      controller: _scrollController,
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       itemCount: s.data!.messages.length,
                       itemBuilder: (_, i) => _buildMessage(s.data!.messages[i]),

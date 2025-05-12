@@ -37,10 +37,14 @@ class ChatApi {
       body: jsonEncode(body),
     );
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load chat threads (${response.statusCode})');
+    // 👇 Update: Handle both 200 with data and empty results
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      // 👇 Improved: Include response body in the exception for better debugging
+      throw Exception(
+          'Failed to load chat threads (${response.statusCode}): ${response.body}');
     }
-    return jsonDecode(response.body) as Map<String, dynamic>;
   }
 
   static Future<Map<String, dynamic>> getThreadMessages(int threadId) async {
