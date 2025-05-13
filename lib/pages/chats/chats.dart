@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/backend/api_requests/chat_api.dart';
 import 'package:my_app/pages/chats/chat_details.dart';
 import 'package:my_app/pages/chats/chat_model.dart';
+import 'package:my_app/pages/chats/new_chat.dart';
 import 'package:my_app/pages/documents/documents.dart';
 import '../../config/theme.dart';
 import 'dart:async';
@@ -86,7 +87,7 @@ class _ChatState extends State<Chats> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      t.subject,
+                      t.lastMessage ?? '',
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                             fontFamily: 'Inter',
@@ -96,7 +97,7 @@ class _ChatState extends State<Chats> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${t.lastMessageSenderCompany}: ${t.lastMessage}',
+                      'From ${t.lastMessageSender ?? 'Unknown'} | ${t.lastMessageTime}',
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                             fontFamily: 'Inter',
@@ -106,14 +107,6 @@ class _ChatState extends State<Chats> {
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                t.lastMessageTime,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelSmall
-                    ?.copyWith(color: Colors.grey),
               ),
             ],
           ),
@@ -168,24 +161,31 @@ class _ChatState extends State<Chats> {
                               ),
                         ),
                         const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.error,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            children: const [
-                              Icon(Icons.add_circle_outline,
-                                  size: 14, color: Colors.white),
-                              SizedBox(width: 6),
-                              Text(
-                                'New Message',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 11),
-                              ),
-                            ],
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => const NewChatsScreen(),
+                            ));
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.error,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: const [
+                                Icon(Icons.add_circle_outline,
+                                    size: 14, color: Colors.white),
+                                SizedBox(width: 6),
+                                Text(
+                                  'New Message',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 11),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
