@@ -259,7 +259,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
               ? Center(child: Text("Error: $_error"))
               : ListView.builder(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
                   itemCount: _notifications.length,
                   itemBuilder: (ctx, i) {
                     final n = _notifications[i];
