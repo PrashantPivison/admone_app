@@ -199,7 +199,6 @@ class _CompanyDataPageState extends State<CompanyDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: Colors.grey[200],
