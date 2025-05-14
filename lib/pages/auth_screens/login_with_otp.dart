@@ -405,6 +405,7 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:my_app/config/Animation/lefttoright_animation.dart';
 import 'package:provider/provider.dart';
 import '../../app_state.dart';
 import '../../config/Animation/righttoleft_animation.dart';
@@ -890,7 +891,7 @@ class _LoginWithOtpState extends State<LoginWithOtp> {
     child: OutlinedButton(
       onPressed: () {
       Navigator.of(context).pushReplacement(
-        createRightToLeftRoute(const LoginPage()),
+        createLeftToRightRoute(const LoginPage()),
       );
     },
       style: Theme.of(context).outlinedPrimaryButtonStyle,
