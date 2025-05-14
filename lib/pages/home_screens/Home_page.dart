@@ -65,6 +65,14 @@ class _DashboardState extends State<HomePage> {
     try {
       final appState = Provider.of<AppState>(context, listen: false);
       final response = await DashboardApi.getDashboardStats(appState.token!);
+
+      // ✅ Store clients globally in AppState
+      if (response['clientDetails'] != null) {
+        final clientList =
+            List<Map<String, dynamic>>.from(response['clientDetails']);
+        appState.setClients(clientList);
+      }
+
       setState(() {
         _documents = response['recentFiles'] ?? [];
         _messages = response['threads'] ?? [];
@@ -102,10 +110,10 @@ class _DashboardState extends State<HomePage> {
           Text(
             title,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontFamily: 'Inter',
-              color: CustomColors.text,
-              fontWeight: FontWeight.w600,
-            ),
+                  fontFamily: 'Inter',
+                  color: CustomColors.text,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
           const SizedBox(height: 10),
           ...items,
@@ -151,7 +159,8 @@ class _DashboardState extends State<HomePage> {
           icon: null,
           gicon: Icons.message_outlined,
           title: msg['lastMessage'] ?? '',
-          subtitle: 'From ${msg['lastMessageSender']} | ${msg['lastMessageTime'] ?? ''}',
+          subtitle:
+              'From ${msg['lastMessageSender']} | ${msg['lastMessageTime'] ?? ''}',
           giconColor: Colors.green,
         ),
       );
@@ -159,14 +168,14 @@ class _DashboardState extends State<HomePage> {
   }
 
   Widget _buildListItem(
-      BuildContext context, {
-        required Widget? icon,
-        required String title,
-        required String subtitle,
-        required IconData? gicon,
-        String? amount,
-        Color? giconColor,
-      }) {
+    BuildContext context, {
+    required Widget? icon,
+    required String title,
+    required String subtitle,
+    required IconData? gicon,
+    String? amount,
+    Color? giconColor,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -192,19 +201,19 @@ class _DashboardState extends State<HomePage> {
                       title,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontFamily: 'Inter',
-                        color: CustomColors.text,
-                        fontWeight: FontWeight.w600,
-                      ),
+                            fontFamily: 'Inter',
+                            color: CustomColors.text,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                   ),
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      fontFamily: 'Inter',
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w600,
-                    ),
+                          fontFamily: 'Inter',
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                 ],
               ),
@@ -213,10 +222,10 @@ class _DashboardState extends State<HomePage> {
               Text(
                 amount,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  fontFamily: 'Inter',
-                  color: CustomColors.text,
-                  fontWeight: FontWeight.w600,
-                ),
+                      fontFamily: 'Inter',
+                      color: CustomColors.text,
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
           ],
         ),
@@ -278,7 +287,8 @@ class _DashboardState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Empty container to balance the row
-                      Container(width: 48), // Same width as the notification icon
+                      Container(
+                          width: 48), // Same width as the notification icon
 
                       // Centered logo
                       Image.asset(
@@ -291,11 +301,13 @@ class _DashboardState extends State<HomePage> {
                       Stack(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.notifications, color: Colors.white),
+                            icon: const Icon(Icons.notifications,
+                                color: Colors.white),
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (_) => NotificationsPage()),
+                                MaterialPageRoute(
+                                    builder: (_) => NotificationsPage()),
                               );
                             },
                           ),
@@ -327,18 +339,18 @@ class _DashboardState extends State<HomePage> {
                   Text(
                     _user?['user']?['name'] ?? '',
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontFamily: 'Poppins',
-                      color: Theme.of(context).colorScheme.onSecondary,
-                    ),
+                          fontFamily: 'Poppins',
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     _user?['user']?['email'] ?? '',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontFamily: 'Poppins',
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      fontWeight: FontWeight.w500,
-                    ),
+                          fontFamily: 'Poppins',
+                          color: Theme.of(context).colorScheme.onSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                   const SizedBox(height: 30),
                   Container(
@@ -347,7 +359,7 @@ class _DashboardState extends State<HomePage> {
                       color: Theme.of(context).colorScheme.onSecondary,
                     ),
                     padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(

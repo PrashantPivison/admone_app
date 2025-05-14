@@ -1,5 +1,3 @@
-// // lib/ui/dashboard.dart
-//
 import 'package:flutter/material.dart';
 import 'package:my_app/backend/api_requests/chat_api.dart';
 import 'package:my_app/pages/chats/chat_details.dart';
@@ -162,10 +160,15 @@ class _ChatState extends State<Chats> {
                         ),
                         const Spacer(),
                         GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
+                          onTap: () async {
+                            final result = await Navigator.of(context)
+                                .push(MaterialPageRoute(
                               builder: (_) => const NewChatsScreen(),
                             ));
+
+                            if (result == true) {
+                              _loadThreads(); // refresh on return
+                            }
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(

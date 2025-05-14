@@ -18,7 +18,8 @@ class AppState extends ChangeNotifier {
   int get unreadNotificationCount => _unreadNotificationCount;
   bool _useDeviceAuth = false;
   bool get useDeviceAuth => _useDeviceAuth;
-
+  List<Map<String, dynamic>> _clients = [];
+  List<Map<String, dynamic>> get clients => _clients;
   Map<String, dynamic>? userData;
   String? token;
 
@@ -312,6 +313,11 @@ class AppState extends ChangeNotifier {
     } else {
       print('⚠️ FCM token is null');
     }
+  }
+
+  void setClients(List<Map<String, dynamic>> newClients) {
+    _clients = newClients;
+    notifyListeners();
   }
 
   // ================ Final Auth Check ================

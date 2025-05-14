@@ -148,4 +148,39 @@ class ChatApi {
     final j = jsonDecode(resp.body);
     return j['dbEntries'] as List<dynamic>;
   }
+
+  static Future<Map<String, dynamic>> createThread({
+    required int clientId,
+    required String subject,
+    required String messageBody,
+    required List<Map<String, dynamic>>? tasks, // List of {title:.., status:..}
+    List<int>? fileIds, // optional file IDs
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token') ?? '';
+    final uri = Uri.parse('$_baseUrl/createNewThread');
+
+    final body = {
+      'client_id': clientId,
+      'subject': subject,
+      'messageBody': messageBody,
+      'tasks': tasks ?? [],
+      'files': fileIds ?? [],
+    };
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      throw Exception('Create thread failed: ${response.body}');
+    }
+  }
 }
