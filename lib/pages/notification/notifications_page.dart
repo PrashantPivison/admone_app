@@ -313,31 +313,31 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           ),
                           child: ListTile(
                             horizontalTitleGap: 0,
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(12, 0, 15, 0),
+                            contentPadding: const EdgeInsets.fromLTRB(12, 0, 15, 0),
                             leading: isUnread
                                 ? Container(
-                                    margin: const EdgeInsets.only(bottom: 10),
-                                    width: 16,
-                                    alignment: Alignment.centerLeft,
-                                    child: const Icon(Icons.circle,
-                                        size: 10, color: Color(0xFF4179C5)),
-                                  )
+                              width: 16,
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 14),
+                                child: Icon(
+                                  Icons.circle,
+                                  size: 10,
+                                  color: Color(0xFF4179C5),
+                                ),
+                              ),
+
+                            )
                                 : const SizedBox(width: 18),
                             title: Text(
                               '$title – ‘$message’',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium
-                                  ?.copyWith(
-                                    fontFamily: 'Inter',
-                                    color: isUnread
-                                        ? const Color(0xFF4179C5)
-                                        : Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                fontFamily: 'Inter',
+                                color: isUnread ? const Color(0xFF4179C5) : Colors.black,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             subtitle: Row(
                               children: [
@@ -345,38 +345,98 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                   child: Text(
                                     'From $senderName',
                                     overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelSmall
-                                        ?.copyWith(
-                                          fontFamily: 'Inter',
-                                          color: Colors.grey,
-                                        ),
+                                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                      fontFamily: 'Inter',
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                Text('|',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelSmall
-                                        ?.copyWith(
-                                          fontFamily: 'Inter',
-                                          color: Colors.grey,
-                                        )),
+                                Text(
+                                  '|',
+                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    fontFamily: 'Inter',
+                                    color: Colors.grey,
+                                  ),
+                                ),
                                 const SizedBox(width: 10),
                                 Text(
                                   timeAgo,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelSmall
-                                      ?.copyWith(
-                                        fontFamily: 'Inter',
-                                        color: Colors.grey,
-                                      ),
+                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    fontFamily: 'Inter',
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
+
+                          // child: ListTile(
+                          //   horizontalTitleGap: 0,
+                          //   contentPadding:
+                          //       const EdgeInsets.fromLTRB(12, 0, 15, 0),
+                          //   leading: isUnread
+                          //       ? Container(
+                          //           margin: const EdgeInsets.only(bottom: 10),
+                          //           width: 16,
+                          //           alignment: Alignment.centerLeft,
+                          //           child: const Icon(Icons.circle,
+                          //               size: 10, color: Color(0xFF4179C5)),
+                          //         )
+                          //       : const SizedBox(width: 18),
+                          //   title: Text(
+                          //     '$title – ‘$message’',
+                          //     maxLines: 1,
+                          //     overflow: TextOverflow.ellipsis,
+                          //     style: Theme.of(context)
+                          //         .textTheme
+                          //         .labelMedium
+                          //         ?.copyWith(
+                          //           fontFamily: 'Inter',
+                          //           color: isUnread
+                          //               ? const Color(0xFF4179C5)
+                          //               : Colors.black,
+                          //           fontWeight: FontWeight.w600,
+                          //         ),
+                          //   ),
+                          //   subtitle: Row(
+                          //     children: [
+                          //       Flexible(
+                          //         child: Text(
+                          //           'From $senderName',
+                          //           overflow: TextOverflow.ellipsis,
+                          //           style: Theme.of(context)
+                          //               .textTheme
+                          //               .labelSmall
+                          //               ?.copyWith(
+                          //                 fontFamily: 'Inter',
+                          //                 color: Colors.grey,
+                          //               ),
+                          //         ),
+                          //       ),
+                          //       const SizedBox(width: 10),
+                          //       Text('|',
+                          //           style: Theme.of(context)
+                          //               .textTheme
+                          //               .labelSmall
+                          //               ?.copyWith(
+                          //                 fontFamily: 'Inter',
+                          //                 color: Colors.grey,
+                          //               )),
+                          //       const SizedBox(width: 10),
+                          //       Text(
+                          //         timeAgo,
+                          //         style: Theme.of(context)
+                          //             .textTheme
+                          //             .labelSmall
+                          //             ?.copyWith(
+                          //               fontFamily: 'Inter',
+                          //               color: Colors.grey,
+                          //             ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                         ),
                       ),
                     );
