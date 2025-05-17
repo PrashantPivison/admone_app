@@ -745,6 +745,7 @@ class _NewChatsState extends State<NewChatsScreen> {
                 ],
               ),
             ),
+            const SizedBox(height: 10)
           ],
         ),
       ),
