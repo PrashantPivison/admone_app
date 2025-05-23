@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:file_picker/file_picker.dart';
+// import 'package:file_picker/file_picker.dart';
 import 'package:my_app/app_state.dart';
 import 'package:my_app/backend/api_requests/chat_api.dart';
 import 'package:my_app/pages/chats/chat_details_model.dart';
@@ -56,11 +56,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     setState(() {});
   }
 
-  Future<void> _attachFile() async {
-    final res = await FilePicker.platform.pickFiles();
-    if (res == null) return;
-    setState(() => _pickedPaths = [res.files.single.path!]);
-  }
+  // Future<void> _attachFile() async {
+  //   final res = await FilePicker.platform.pickFiles();
+  //   if (res == null) return;
+  //   setState(() => _pickedPaths = [res.files.single.path!]);
+  // }
 
   Future<void> _sendMessage() async {
     final text = _msgCtrl.text.trim();
@@ -292,7 +292,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          onTap: _attachFile,
+                          // onTap: _attachFile,
                           child: Container(
                             height: 30,
                             padding: const EdgeInsets.symmetric(horizontal: 12),

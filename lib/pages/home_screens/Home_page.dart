@@ -123,9 +123,22 @@ class _DashboardState extends State<HomePage> {
   }
 
   List<Widget> _buildDocumentItems(BuildContext context) {
-    if (_loading) return [const Center(child: CircularProgressIndicator())];
-    if (_error != null) return [Text('Error loading documents: $_error')];
-    if (_documents.isEmpty) return [const Text('No documents found')];
+    // if (true) {
+    //   return List.generate(3, (index) => _buildShimmerPlaceholder());
+    // }
+
+    if (_loading) {
+      // Show shimmer placeholders while loading
+      return List.generate(3, (index) => ShimmerPlaceholder());
+    }
+
+    if (_error != null) {
+      return [Text('Error loading documents: $_error')];
+    }
+
+    if (_documents.isEmpty) {
+      return [const Text('No documents found')];
+    }
 
     return _documents.map((doc) {
       final isPDF = doc['file_type']?.toLowerCase() == 'pdf';
@@ -147,9 +160,23 @@ class _DashboardState extends State<HomePage> {
   }
 
   List<Widget> _buildMessaggesItems(BuildContext context) {
-    if (_loading) return [const Center(child: CircularProgressIndicator())];
-    if (_error != null) return [Text('Error loading messages: $_error')];
-    if (_messages.isEmpty) return [const Text('No messages found')];
+    // if (true) {
+    //   return List.generate(3, (index) => _buildShimmerPlaceholder());
+    // }
+
+    if (_loading) {
+      // Show shimmer placeholders while loading
+      return List.generate(3, (index) => ShimmerPlaceholder());
+    }
+    if (_loading) {
+      return [const Center(child: CircularProgressIndicator())];
+    }
+    if (_error != null) {
+      return [Text('Error loading messages: $_error')];
+    }
+    if (_messages.isEmpty) {
+      return [const Text('No messages found')];
+    }
 
     return _messages.map((msg) {
       return Padding(
@@ -200,6 +227,7 @@ class _DashboardState extends State<HomePage> {
                     child: Text(
                       title,
                       overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                             fontFamily: 'Inter',
                             color: CustomColors.text,

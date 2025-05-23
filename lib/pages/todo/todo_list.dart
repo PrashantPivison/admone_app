@@ -127,11 +127,14 @@ class _TodoListState extends State<TodoList> {
                     final confirm = await showDialog<bool>(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                        title: const Text('Mark task complete?' , style: TextStyle(
-                          fontFamily: 'Inter',
-                          color: CustomColors.text,
-                          fontWeight: FontWeight.w600,
-                        ), ),
+                        title: const Text(
+                          'Mark task complete?',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            color: CustomColors.text,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                         content: Text(task.taskDetails),
                         actions: [
                           TextButton(
@@ -221,71 +224,84 @@ class _TodoListState extends State<TodoList> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        toolbarHeight: 140,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: Stack(children: [
-          Container(color: Theme.of(context).colorScheme.primary),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(children: [
-                  // GestureDetector(
-                  //   onTap: () => Navigator.pop(context),
-                  //   child: const Icon(Icons.arrow_back,
-                  //       color: Colors.white, size: 20),
-                  // ),
-                  const SizedBox(width: 10),
-                  Text('To Dos',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium
-                          ?.copyWith(
-                        fontFamily: 'Poppins',
-                        color: Theme.of(context).colorScheme.onSecondary,
-                      )),
-                ]),
-                const SizedBox(height: 15),
-                TextField(
-                  decoration: InputDecoration(
-                    contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    hintText: 'Search tasks...',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide.none,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          toolbarHeight: 140,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          flexibleSpace: Stack(children: [
+            Container(color: Theme.of(context).colorScheme.primary),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(children: [
+                    // GestureDetector(
+                    //   onTap: () => Navigator.pop(context),
+                    //   child: const Icon(Icons.arrow_back,
+                    //       color: Colors.white, size: 20),
+                    // ),
+                    const SizedBox(width: 10),
+                    Text('To Dos',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              fontFamily: 'Poppins',
+                              color: Theme.of(context).colorScheme.onSecondary,
+                            )),
+                  ]),
+                  const SizedBox(height: 15),
+                  TextField(
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      hintText: 'Search tasks...',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Icon(Icons.search, size: 18),
+                      isDense: true,
                     ),
-                    prefixIcon: const Icon(Icons.search, size: 18),
-                    isDense: true,
+                    style: const TextStyle(fontSize: 12),
+                    onChanged: (_) {},
                   ),
-                  style: const TextStyle(fontSize: 12),
-                  onChanged: (_) {},
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ]),
+          ]),
+        ),
+        body: FutureBuilder<TodoResponse>(
+          future: _futureTodos,
+          builder: (ctx, snap) {
+            if (snap.connectionState != ConnectionState.done) {
+              return ListView.builder(
+                itemCount: 6,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                itemBuilder: (_, __) => const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: ShimmerPlaceholder(),
+                ),
+              );
+            }
+            // if (snap.connectionState != ConnectionState.done) {
+            //   return const Center(child: CircularProgressIndicator());
+            // }
+            if (snap.hasError) {
+              return Center(child: Text('Error: ${snap.error}'));
+            }
+            return _buildDashboardContent(snap.data!);
+          },
+        ),
       ),
-      body: FutureBuilder<TodoResponse>(
-        future: _futureTodos,
-        builder: (ctx, snap) {
-          if (snap.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snap.hasError) {
-            return Center(child: Text('Error: ${snap.error}'));
-          }
-          return _buildDashboardContent(snap.data!);
-        },
-      ),
-    ), ) ;
+    );
   }
 }

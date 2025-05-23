@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_app/backend/api_requests/auth_api.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:my_app/backend/api_requests/fcm_token_api.dart';
 
 class AppState extends ChangeNotifier {
@@ -138,11 +138,11 @@ class AppState extends ChangeNotifier {
         }
 
         // ✅ Upload FCM token
-        final fcmToken = await FirebaseMessaging.instance.getToken();
-        if (userId != null && fcmToken != null) {
-          await FcmTokenApi.saveFcmToken(userId: userId, fcmToken: fcmToken);
-          print("✅ FCM token sent to backend");
-        }
+        // final fcmToken = await FirebaseMessaging.instance.getToken();
+        // if (userId != null && fcmToken != null) {
+        //   await FcmTokenApi.saveFcmToken(userId: userId, fcmToken: fcmToken);
+        //   print("✅ FCM token sent to backend");
+        // }
 
         // Reset auth states
         biometricPassed = false;
@@ -305,15 +305,15 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> uploadFcmToken(int userId) async {
-    final fcmToken = await FirebaseMessaging.instance.getToken();
-    if (fcmToken != null) {
-      await FcmTokenApi.saveFcmToken(userId: userId, fcmToken: fcmToken);
-      print('✅ FCM token saved successfully');
-    } else {
-      print('⚠️ FCM token is null');
-    }
-  }
+  // Future<void> uploadFcmToken(int userId) async {
+  //   final fcmToken = await FirebaseMessaging.instance.getToken();
+  //   if (fcmToken != null) {
+  //     await FcmTokenApi.saveFcmToken(userId: userId, fcmToken: fcmToken);
+  //     print('✅ FCM token saved successfully');
+  //   } else {
+  //     print('⚠️ FCM token is null');
+  //   }
+  // }
 
   void setClients(List<Map<String, dynamic>> newClients) {
     _clients = newClients;

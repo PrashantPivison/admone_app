@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CustomColors {
   // Custom color constants
@@ -29,25 +30,41 @@ const chatsMessage = TextStyle(
 
 // Main app theme configuration
 final ThemeData customTheme = ThemeData(
-  fontFamily: "Inter", // Default font family
-  primaryColor: const Color(0x255597), // Primary color
-  scaffoldBackgroundColor: const Color(0xFFE9ECEF), // Scaffold background
+  fontFamily: "Inter",
+  // Default font family
+  primaryColor: const Color(0x255597),
+  // Primary color
+  scaffoldBackgroundColor: const Color(0xFFE9ECEF),
+  // Scaffold background
 
   // Color scheme for light theme
   colorScheme: const ColorScheme.light(
-    primary: Color(0xFF1F468E), // Primary color for widgets
-    secondary: Color(0xFF6C757D), // Secondary color
-    onSecondary: Colors.white, // Content on secondary color
-    tertiary: Color(0xFF0E5FF5), // Tertiary color
-    onTertiary: Colors.white, // Content on tertiary color
-    background: Color(0xFFE9ECEF), // Background color
-    onBackground: Color(0xFF262A2E), // Content on background
-    surface: Colors.white, // Surface color (cards, sheets)
-    onSurface: Color(0xFF262A2E), // Content on surface
-    error: Color(0xFFD93933), // Error color
-    onError: Colors.white, // Content on error color
-    outline: Color(0xFFBDBDBD), // Outline/border color
-    inverseSurface: Color(0xFF303030), // Inverse surface
+    primary: Color(0xFF1F468E),
+    // Primary color for widgets
+    secondary: Color(0xFF6C757D),
+    // Secondary color
+    onSecondary: Colors.white,
+    // Content on secondary color
+    tertiary: Color(0xFF0E5FF5),
+    // Tertiary color
+    onTertiary: Colors.white,
+    // Content on tertiary color
+    background: Color(0xFFE9ECEF),
+    // Background color
+    onBackground: Color(0xFF262A2E),
+    // Content on background
+    surface: Colors.white,
+    // Surface color (cards, sheets)
+    onSurface: Color(0xFF262A2E),
+    // Content on surface
+    error: Color(0xFFD93933),
+    // Error color
+    onError: Colors.white,
+    // Content on error color
+    outline: Color(0xFFBDBDBD),
+    // Outline/border color
+    inverseSurface: Color(0xFF303030),
+    // Inverse surface
     inversePrimary: Color(0xFF4179C5), // Inverse primary
   ),
 
@@ -150,13 +167,13 @@ InputDecoration buildInputDecoration({
     ),
     suffixIcon: suffixIcon != null
         ? GestureDetector(
-      onTap: onSuffixTap,
-      child: Icon(
-        suffixIcon,
-        color: CustomColors.textField,
-        size: 20,
-      ),
-    )
+            onTap: onSuffixTap,
+            child: Icon(
+              suffixIcon,
+              color: CustomColors.textField,
+              size: 20,
+            ),
+          )
         : null,
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
@@ -185,28 +202,84 @@ InputDecoration buildInputDecoration({
 // Button theme extensions
 extension BlueButtonThemeExtension on ThemeData {
   ButtonStyle get primaryButtonStyle => ElevatedButton.styleFrom(
-    backgroundColor: colorScheme.primary,
-    foregroundColor: colorScheme.surface,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8),
-    ),
-    padding: const EdgeInsets.symmetric(vertical: 10),
-    minimumSize: const Size(double.infinity, 45),
-  );
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        minimumSize: const Size(double.infinity, 45),
+      );
 
   TextStyle get primaryButtonTextStyle => const TextStyle(
-    fontFamily: 'Poppins',
-    fontSize: 14,
-    fontWeight: FontWeight.w600,
-  );
+        fontFamily: 'Poppins',
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      );
 
   ButtonStyle get outlinedPrimaryButtonStyle => OutlinedButton.styleFrom(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8),
-    ),
-    side: BorderSide(color: colorScheme.primary),
-    foregroundColor: colorScheme.primary,
-    padding: const EdgeInsets.symmetric(vertical: 10),
-    minimumSize: const Size(double.infinity, 45),
-  );
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        side: BorderSide(color: colorScheme.primary),
+        foregroundColor: colorScheme.primary,
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        minimumSize: const Size(double.infinity, 45),
+      );
+}
+
+// shimmer loading effect
+
+class ShimmerPlaceholder extends StatelessWidget {
+  const ShimmerPlaceholder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFDDDDDD), width: 1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 25,
+                  height: 25,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 16,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 6),
+                      Container(
+                        width: 150,
+                        height: 12,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

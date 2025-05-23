@@ -87,6 +87,7 @@ class _ChatState extends State<Chats> {
                     Text(
                       t.lastMessage ?? '',
                       overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                             fontFamily: 'Inter',
                             color: CustomColors.text,
@@ -133,19 +134,6 @@ class _ChatState extends State<Chats> {
                   children: [
                     Row(
                       children: [
-                        // GestureDetector(
-                        //   onTap: () => Navigator.pushAndRemoveUntil(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (_) => const FilesScreen()),
-                        //         (route) => false,
-                        //   ),
-                        //   child: const Icon(
-                        //     Icons.arrow_back,
-                        //     color: Colors.white,
-                        //     size: 20,
-                        //   ),
-                        // ),
                         const SizedBox(width: 10),
                         Text(
                           'Messages',
@@ -232,9 +220,21 @@ class _ChatState extends State<Chats> {
         body: FutureBuilder<ThreadsResponse>(
           future: _futureThreads,
           builder: (ctx, snap) {
+            // if (snap.connectionState != ConnectionState.done) {
+            //   return const Center(child: CircularProgressIndicator());
+            // }
             if (snap.connectionState != ConnectionState.done) {
-              return const Center(child: CircularProgressIndicator());
+              return ListView.builder(
+                itemCount: 6,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                itemBuilder: (_, __) => const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: ShimmerPlaceholder(),
+                ),
+              );
             }
+
             if (snap.hasError) {
               final errorMessage = snap.error.toString();
               final regex = RegExp(r'message":"(.*?)"');

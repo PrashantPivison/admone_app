@@ -10,9 +10,11 @@ import '../../config/theme.dart';
 class _Item {
   final FolderItem? folder;
   final FileItem? file;
+
   bool get isFolder => folder != null;
 
   _Item.folder(this.folder) : file = null;
+
   _Item.file(this.file) : folder = null;
 }
 
@@ -299,21 +301,6 @@ class _FilesScreenState extends State<FilesScreen> {
                             .headlineMedium
                             ?.copyWith(color: Colors.white)),
                     const Spacer(),
-                    // Container(
-                    //   padding:
-                    //       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    //   decoration: BoxDecoration(
-                    //     color: Theme.of(context).colorScheme.error,
-                    //     borderRadius: BorderRadius.circular(8),
-                    //   ),
-                    //   child: Row(children: const [
-                    //     Icon(Icons.add_circle_outline,
-                    //         size: 14, color: Colors.white),
-                    //     SizedBox(width: 6),
-                    //     Text('New File',
-                    //         style: TextStyle(color: Colors.white, fontSize: 11)),
-                    //   ]),
-                    // ),
                   ]),
                   const SizedBox(height: 12),
                   TextField(
@@ -349,7 +336,6 @@ class _FilesScreenState extends State<FilesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildBreadcrumbs(),
-                      const SizedBox(height: 12),
                       Expanded(
                         child: NotificationListener<ScrollNotification>(
                           onNotification: (notif) {
@@ -365,6 +351,7 @@ class _FilesScreenState extends State<FilesScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             itemCount: itemCount,
                             itemBuilder: (ctx, i) {
+
                               if (showLoader && i == _currentMax) {
                                 return const Padding(
                                   padding: EdgeInsets.all(8),
